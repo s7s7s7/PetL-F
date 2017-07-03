@@ -3,9 +3,13 @@ package edu.rosehulman.lix4.petlf;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment switchTo = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    switchTo = new WelcomeFragment();
                     return true;
                 case R.id.navigation_lost:
                     mTextMessage.setText(R.string.title_lost);
@@ -40,7 +45,12 @@ public class MainActivity extends AppCompatActivity {
                     mTextMessage.setText(R.string.title_notifications);
                     return true;
             }
-            return false;
+            if (switchTo != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content, switchTo);
+                ft.commit();
+            }
+            return true;
         }
 
     };
