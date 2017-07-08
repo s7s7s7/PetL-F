@@ -7,47 +7,48 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-    private TextView mTextMessage;
+    private Fragment mCurrentFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        mCurrentFragment = new WelcomeFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.content, mCurrentFragment);
+        ft.commit();
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment switchTo = null;
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    switchTo = new WelcomeFragment();
-                    return true;
+                    mCurrentFragment = new WelcomeFragment();
+                    break;
                 case R.id.navigation_lost:
-                    mTextMessage.setText(R.string.title_lost);
-                    return true;
+                    break;
                 case R.id.navigation_found:
-                    mTextMessage.setText(R.string.title_found);
-                    return true;
+                    break;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
+                    mCurrentFragment = new AccountFragment();
+                    break;
             }
-            if (switchTo != null) {
+            if (mCurrentFragment != null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content, switchTo);
+                ft.replace(R.id.content, mCurrentFragment);
                 ft.commit();
             }
             return true;

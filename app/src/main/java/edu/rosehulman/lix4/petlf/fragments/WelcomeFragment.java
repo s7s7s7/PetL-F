@@ -1,11 +1,14 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import edu.rosehulman.lix4.petlf.R;
 
@@ -19,6 +22,8 @@ public class WelcomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private Button signinButton;
+    private Button signupButton;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,7 +65,41 @@ public class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_welcome, container, false);
+        View view = inflater.inflate(R.layout.fragment_welcome, container, false);
+        signinButton = (Button) view.findViewById(R.id.signin_button);
+        signinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSignInUpDialog(true);
+            }
+        });
+        signupButton = (Button) view.findViewById(R.id.signup_button);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSignInUpDialog(false);
+            }
+        });
+        return view;
+    }
+
+    private void showSignInUpDialog(boolean switsh) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signinup, null);
+        builder.setView(view);
+        if (switsh) {
+            builder.setTitle(R.string.signin_dialog_title);
+        } else {
+            builder.setTitle(R.string.signup_dialog_title);
+        }
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+             
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.show();
     }
 
 }
