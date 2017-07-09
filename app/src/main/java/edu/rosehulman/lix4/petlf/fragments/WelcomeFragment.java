@@ -83,19 +83,26 @@ public class WelcomeFragment extends Fragment {
         return view;
     }
 
-    private void showSignInUpDialog(boolean switsh) {
+    private void showSignInUpDialog(final boolean switsh) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signinup, null);
-        builder.setView(view);
+        View view = null;
         if (switsh) {
             builder.setTitle(R.string.signin_dialog_title);
+            view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signin, null);
+
         } else {
             builder.setTitle(R.string.signup_dialog_title);
+            view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signup, null);
         }
+        builder.setView(view);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-             
+                if (switsh) {
+
+                } else {
+
+                }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, null);
