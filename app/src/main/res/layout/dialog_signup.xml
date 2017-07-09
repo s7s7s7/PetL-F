@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/dialog_email_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -22,39 +22,51 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/edit_email_text"
+        android:layout_below="@+id/edit_username_text"
         android:layout_marginTop="36dp"
         android:text="@string/dialog_password_text"
         android:textSize="30dp" />
 
     <EditText
-        android:id="@+id/edit_email_text"
+        android:id="@+id/edit_username_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_email_title"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:layout_below="@+id/textView3" />
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/edit_password_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:ems="10"
+        android:inputType="numberPassword"
+        android:layout_below="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/dialog_confirm_email_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView4"
-        android:layout_marginTop="46dp"
-        android:ems="10"
-        android:inputType="numberPassword" />
+        android:layout_below="@+id/edit_password_text"
+        android:layout_marginTop="30dp"
+        android:text="@string/dialog_confirm_email_text"
+        android:textSize="30dp" />
 
     <EditText
         android:id="@+id/edit＿password_confirm_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_password_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
+        android:layout_marginTop="26dp"
         android:ems="10"
-        android:inputType="numberPassword" />
+        android:inputType="numberPassword"
+        android:layout_below="@+id/dialog_confirm_email_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
