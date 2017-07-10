@@ -6,21 +6,23 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AccountFragment.CallBack {
     private Fragment mCurrentFragment = null;
+    private BottomNavigationView mNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mNavigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mCurrentFragment = new WelcomeFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+            Log.d("NavigationItem", item.getItemId() + "");
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mCurrentFragment = new WelcomeFragment();
@@ -56,4 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    @Override
+    public void setNavigationId(int id) {
+        mNavigation.setSelectedItemId(id);
+    }
 }
