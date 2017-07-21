@@ -1,6 +1,7 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -69,8 +70,7 @@ public class AccountFragment extends Fragment {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: (1) log user out using firebase.
-
+                mCallBack.setNavigationId(R.id.navigation_home);
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content, new WelcomeFragment());
                 ft.commit();
@@ -82,6 +82,23 @@ public class AccountFragment extends Fragment {
 
     public interface CallBack {
         void setNavigationId(int id);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CallBack) {
+            mCallBack = (CallBack) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement CallBack");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallBack = null;
     }
 
 }
