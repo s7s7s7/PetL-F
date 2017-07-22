@@ -8,9 +8,49 @@ public class Post {
     private String userId;
     private boolean type;
     private String postId;
+    private String title;
+    private String description;
+    private Size size;
+    private String breed;
+
+    enum Size {
+        Big, Medium, Small
+    }
 
     public Post() {
 
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
     }
 
     public String getUserId() {

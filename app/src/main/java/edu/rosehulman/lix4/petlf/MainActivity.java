@@ -6,7 +6,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.C
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Log.d("NavigationItem", item.getItemId() + "");
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mCurrentFragment = new WelcomeFragment();
