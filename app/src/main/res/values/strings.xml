@@ -23,4 +23,5 @@
     <string name="button_logout_text">Log Out</string>
     <string name="button_contact_us_text">Contact Us</string>
     <string name="email_diaplay_text">Email: %s</string>
+    <string name="button_delete">Delete</string>
 </resources>

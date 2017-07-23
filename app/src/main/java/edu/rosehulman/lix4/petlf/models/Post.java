@@ -18,7 +18,7 @@ public class Post {
     }
 
     public Post() {
-
+        
     }
 
     public String getTitle() {
