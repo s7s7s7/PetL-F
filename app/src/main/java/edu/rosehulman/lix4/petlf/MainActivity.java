@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
+import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 
 public class MainActivity extends AppCompatActivity implements AccountFragment.CallBack {
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.C
                     mCurrentFragment = new WelcomeFragment();
                     break;
                 case R.id.navigation_lost:
+                    mCurrentFragment = new LostInfoListFragment();
                     break;
                 case R.id.navigation_found:
                     break;
