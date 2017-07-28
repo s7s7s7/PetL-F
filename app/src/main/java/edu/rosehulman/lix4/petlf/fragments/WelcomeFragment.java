@@ -1,8 +1,7 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,36 +17,20 @@ import edu.rosehulman.lix4.petlf.R;
  * create an instance of this fragment.
  */
 public class WelcomeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private Button signinButton;
     private Button signupButton;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private WFCallBack mWFCallBack;
 
 
     public WelcomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WelcomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static WelcomeFragment newInstance(String param1, String param2) {
         WelcomeFragment fragment = new WelcomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +39,7 @@ public class WelcomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -70,43 +52,39 @@ public class WelcomeFragment extends Fragment {
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSignInUpDialog(true);
+                mWFCallBack.showSignInUpDialog(true);
             }
         });
         signupButton = (Button) view.findViewById(R.id.signup_button);
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSignInUpDialog(false);
+                mWFCallBack.showSignInUpDialog(false);
             }
         });
         return view;
     }
 
-    private void showSignInUpDialog(final boolean switsh) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = null;
-        if (switsh) {
-            builder.setTitle(R.string.signin_dialog_title);
-            view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signin, null);
+    public interface WFCallBack {
+        void showSignInUpDialog(boolean switsh);
+    }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AccountFragment.AFCallBack) {
+            mWFCallBack = (WFCallBack) context;
         } else {
-            builder.setTitle(R.string.signup_dialog_title);
-            view = getActivity().getLayoutInflater().inflate(R.layout.dialog_signup, null);
+            throw new RuntimeException(context.toString()
+                    + " must implement AFCallBack");
         }
-        builder.setView(view);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (switsh) {
+    }
 
-                } else {
-
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.show();
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mWFCallBack = null;
     }
 
 }
