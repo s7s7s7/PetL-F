@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
+                    
                 } else {
 
                 }
@@ -125,28 +127,33 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
     @Override
     public void showSignInUpDialog(final boolean switsh) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        View view = null;
-        final String email = "";
-        final String password = "";
+        View view = getLayoutInflater().inflate(R.layout.dialog_signup, null);
+        final EditText emailEditText = (EditText) view.findViewById(R.id.edit_username_text_signup);
+        final EditText passwordEditText = (EditText) view.findViewById(R.id.edit_password_text_signup);
+        final EditText confirmationPasswordEditText = (EditText) view.findViewById(R.id.edit_password_confirm_text_signup);
+        TextView confirmationPasswordTitle = (TextView) view.findViewById(R.id.dialog_confirm_email_title_signup);
         if (switsh) {
             builder.setTitle(R.string.signin_dialog_title);
-            view = getLayoutInflater().inflate(R.layout.dialog_signin, null);
-
+            confirmationPasswordEditText.setVisibility(View.INVISIBLE);
+            confirmationPasswordTitle.setVisibility(View.INVISIBLE);
         } else {
             builder.setTitle(R.string.signup_dialog_title);
-            view = getLayoutInflater().inflate(R.layout.dialog_signup, null);
         }
         builder.setView(view);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                String email = emailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
                 if (switsh) {
                     //sign in
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                 } else {
-                    //sign up
+                    //sign up and login user in automatically
                     mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(mOnCompleteListener);
+                    mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                 }
             }

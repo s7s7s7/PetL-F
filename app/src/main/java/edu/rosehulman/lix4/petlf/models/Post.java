@@ -1,5 +1,7 @@
 package edu.rosehulman.lix4.petlf.models;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by phillee on 7/9/2017.
  */
@@ -12,13 +14,23 @@ public class Post {
     private String description;
     private Size size;
     private String breed;
+    private String key;
 
     enum Size {
         Big, Medium, Small
     }
 
     public Post() {
-        
+
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getTitle() {
