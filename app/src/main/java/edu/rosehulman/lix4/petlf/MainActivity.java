@@ -24,11 +24,15 @@ import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 
 public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack {
-    private Fragment mCurrentFragment = null;
+    //Making this two fields is to control UI according to Login state.
+    private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
+    private AccountFragment mAccountFragment = new AccountFragment();
+
     private BottomNavigationView mNavigation;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
+    private boolean mLoginState = false;
 
 
     @Override
@@ -39,9 +43,10 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         mNavigation = (BottomNavigationView) findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mCurrentFragment = new WelcomeFragment();
+//        mAccountFragment = new AccountFragment();
+//        mWelcomeFragment = new WelcomeFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.content, mCurrentFragment);
+        ft.add(R.id.content, mWelcomeFragment);
         ft.commit();
 
         mAuth = FirebaseAuth.getInstance();
@@ -53,10 +58,15 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    
+//                Log.d("AuthStateChanged user ", "" + user.getUid());
+                //This if-else handles the change of UI.
+                mLoginState = (user != null);
+                if (mLoginState) {
+//                    mWelcomeFragment.controlButtons(true);
+//                    mAccountFragment.controlAButton(true);
                 } else {
-
+//                    mWelcomeFragment.controlButtons(false);
+//                    mAccountFragment.controlAButton(false);
                 }
             }
         };
@@ -75,22 +85,23 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment fragmentSelected = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mCurrentFragment = new WelcomeFragment();
+                    switchToWelcomeFragment(mLoginState);
                     break;
                 case R.id.navigation_lost:
-                    mCurrentFragment = new LostInfoListFragment();
+                    fragmentSelected = new LostInfoListFragment();
                     break;
                 case R.id.navigation_found:
                     break;
-                case R.id.navigation_notifications:
-                    mCurrentFragment = new AccountFragment();
+                case R.id.navigation_account:
+                    switchToAccountFragment(mLoginState);
                     break;
             }
-            if (mCurrentFragment != null) {
+            if (fragmentSelected != null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content, mCurrentFragment);
+                ft.replace(R.id.content, fragmentSelected);
                 ft.commit();
             }
             return true;
@@ -98,10 +109,25 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
 
     };
 
+    public void switchToWelcomeFragment(boolean login) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        mWelcomeFragment.controlButtons(login);
+        ft.replace(R.id.content, mWelcomeFragment);
+        ft.commit();
+    }
+
+    public void switchToAccountFragment(boolean login) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        mAccountFragment.controlAButton(login);
+        ft.replace(R.id.content, mAccountFragment);
+        ft.commit();
+    }
+
 
     @Override
     public void setNavigationId(int id) {
         mNavigation.setSelectedItemId(id);
+        switchToWelcomeFragment(false);
     }
 
     @Override

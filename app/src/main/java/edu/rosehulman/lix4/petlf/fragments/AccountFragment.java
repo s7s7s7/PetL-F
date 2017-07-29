@@ -4,7 +4,6 @@ package edu.rosehulman.lix4.petlf.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import edu.rosehulman.lix4.petlf.R;
 public class AccountFragment extends Fragment {
 
     private AFCallBack mAFCallBack;
+    private Button mLogoutButton;
 
 
     public AccountFragment() {
@@ -31,9 +31,6 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -42,19 +39,27 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
-        Button logOutButton = (Button) view.findViewById(R.id.button_logout);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
+        mLogoutButton = (Button) view.findViewById(R.id.button_logout);
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAFCallBack.setNavigationId(R.id.navigation_home);
                 mAFCallBack.signOut();
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content, new WelcomeFragment());
-                ft.commit();
+//                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//                ft.replace(R.id.content, new WelcomeFragment());
+//                ft.commit();
             }
         });
         Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
         return view;
+    }
+
+    public void controlAButton(boolean b) {
+        if (b) {
+            mLogoutButton.setVisibility(View.VISIBLE);
+        } else {
+            mLogoutButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     public interface AFCallBack {

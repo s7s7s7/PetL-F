@@ -65,6 +65,17 @@ public class WelcomeFragment extends Fragment {
         return view;
     }
 
+    public void controlButtons(boolean b) {
+        if (b) {
+            signupButton.setVisibility(View.INVISIBLE);
+            signinButton.setVisibility(View.INVISIBLE);
+        } else {
+            signupButton.setVisibility(View.VISIBLE);
+            signinButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+
     public interface WFCallBack {
         void showSignInUpDialog(boolean switsh);
     }
