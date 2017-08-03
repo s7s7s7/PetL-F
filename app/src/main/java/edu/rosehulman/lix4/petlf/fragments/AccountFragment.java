@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import edu.rosehulman.lix4.petlf.MyPostActivity;
 import edu.rosehulman.lix4.petlf.R;
@@ -17,7 +18,7 @@ import edu.rosehulman.lix4.petlf.models.User;
 
 public class AccountFragment extends Fragment {
 
-    private static final String ARG_USR = "currentUser";
+    private static final String ARG_USER = "currentUser";
     private AFCallBack mAFCallBack;
     private Button mLogoutButton;
 
@@ -30,7 +31,7 @@ public class AccountFragment extends Fragment {
     public static AccountFragment newInstance(User currentUser) {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_USR, currentUser);
+        args.putParcelable(ARG_USER, currentUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,8 +39,8 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mUser = savedInstanceState.getParcelable(ARG_USR);
+        if (getArguments() != null) {
+            mUser = getArguments().getParcelable(ARG_USER);
         }
     }
 
@@ -48,6 +49,8 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+        TextView emailTextView = (TextView) view.findViewById(R.id.email_display_text_view);
+        emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), mUser.getEmail()));
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
         myPostsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +92,10 @@ public class AccountFragment extends Fragment {
 
     private void startMyPostActivity() {
         Intent myPostActivity = new Intent(getContext(), MyPostActivity.class);
+        String key = "uid";
+        if (mUser != null) {
+            myPostActivity.putExtra(key, mUser.getUserId());
+        }
         startActivity(myPostActivity);
     }
 

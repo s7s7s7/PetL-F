@@ -1,5 +1,6 @@
 package edu.rosehulman.lix4.petlf.models;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,7 +11,7 @@ import com.google.firebase.database.Exclude;
  */
 
 public class User implements Parcelable {
-    private String imageUrl;
+    private Uri imageUrl;
     private String email;
     private String userId;
     private String key;
@@ -19,8 +20,9 @@ public class User implements Parcelable {
 
     }
 
+
     protected User(Parcel in) {
-        imageUrl = in.readString();
+        imageUrl = in.readParcelable(Uri.class.getClassLoader());
         email = in.readString();
         userId = in.readString();
         key = in.readString();
@@ -55,11 +57,11 @@ public class User implements Parcelable {
         this.userId = userId;
     }
 
-    public String getImageUrl() {
+    public Uri getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(Uri imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -71,6 +73,7 @@ public class User implements Parcelable {
         this.email = email;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,9 +81,6 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(imageUrl);
-        dest.writeString(email);
-        dest.writeString(userId);
-        dest.writeString(key);
+
     }
 }

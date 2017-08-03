@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                     FirebaseUser currentFirebaseUser = mAuth.getCurrentUser();
                     currentUser.setEmail(currentFirebaseUser.getEmail());
                     currentUser.setUserId(currentFirebaseUser.getUid());
+                    currentUser.setImageUrl(currentFirebaseUser.getPhotoUrl());
                     fragmentSelected = new AccountFragment().newInstance(currentUser);
 //                    switchToAccountFragment(mLoginState);
                     break;

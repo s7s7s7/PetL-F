@@ -7,7 +7,7 @@ import com.google.firebase.database.Exclude;
  */
 
 public class Post {
-    private String userId;
+    private String uid;
     private boolean type;
     private String postId;
     private String title;
@@ -65,12 +65,12 @@ public class Post {
         this.breed = breed;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public boolean isType() {
