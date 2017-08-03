@@ -2,6 +2,7 @@ package edu.rosehulman.lix4.petlf;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,10 +19,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
+import edu.rosehulman.lix4.petlf.models.User;
 
 public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack {
     //Making this two fields is to control UI according to Login state.
@@ -34,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
     private OnCompleteListener mOnCompleteListener;
     private boolean mLoginState = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         mNavigation = (BottomNavigationView) findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-//        mAccountFragment = new AccountFragment();
-//        mWelcomeFragment = new WelcomeFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.content, mWelcomeFragment);
         ft.commit();
@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-//                Log.d("AuthStateChanged user ", "" + user.getUid());
-                //This if-else handles the change of UI.
                 mLoginState = (user != null);
                 if (mLoginState) {
 //                    mWelcomeFragment.controlButtons(true);
@@ -88,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             Fragment fragmentSelected = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    switchToWelcomeFragment(mLoginState);
+                    fragmentSelected = new WelcomeFragment();
+//                    switchToWelcomeFragment(mLoginState);
                     break;
                 case R.id.navigation_lost:
                     fragmentSelected = new LostInfoListFragment();
@@ -96,7 +95,12 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                 case R.id.navigation_found:
                     break;
                 case R.id.navigation_account:
-                    switchToAccountFragment(mLoginState);
+                    User currentUser = new User();
+                    FirebaseUser currentFirebaseUser = mAuth.getCurrentUser();
+                    currentUser.setEmail(currentFirebaseUser.getEmail());
+                    currentUser.setUserId(currentFirebaseUser.getUid());
+                    fragmentSelected = new AccountFragment().newInstance(currentUser);
+//                    switchToAccountFragment(mLoginState);
                     break;
             }
             if (fragmentSelected != null) {
@@ -109,25 +113,25 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
 
     };
 
-    public void switchToWelcomeFragment(boolean login) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        mWelcomeFragment.controlButtons(login);
-        ft.replace(R.id.content, mWelcomeFragment);
-        ft.commit();
-    }
-
-    public void switchToAccountFragment(boolean login) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        mAccountFragment.controlAButton(login);
-        ft.replace(R.id.content, mAccountFragment);
-        ft.commit();
-    }
+//    public void switchToWelcomeFragment(boolean login) {
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        mWelcomeFragment.controlButtons(login);
+//        ft.replace(R.id.content, mWelcomeFragment);
+//        ft.commit();
+//    }
+//
+//    public void switchToAccountFragment(boolean login) {
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        mAccountFragment.controlAButton(login);
+//        ft.replace(R.id.content, mAccountFragment);
+//        ft.commit();
+//    }
 
 
     @Override
     public void setNavigationId(int id) {
         mNavigation.setSelectedItemId(id);
-        switchToWelcomeFragment(false);
+//        switchToWelcomeFragment(false);
     }
 
     @Override
@@ -181,6 +185,22 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                             .addOnCompleteListener(mOnCompleteListener);
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
+                    //update user imageUrl and alias
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName("Jane Q. User")
+                            .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+                            .build();
+
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+
+                                    }
+                                }
+                            });
                 }
             }
         });

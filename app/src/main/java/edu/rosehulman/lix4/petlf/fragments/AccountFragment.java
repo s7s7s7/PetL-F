@@ -2,6 +2,8 @@ package edu.rosehulman.lix4.petlf.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,21 +11,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import edu.rosehulman.lix4.petlf.MyPostActivity;
 import edu.rosehulman.lix4.petlf.R;
+import edu.rosehulman.lix4.petlf.models.User;
 
 public class AccountFragment extends Fragment {
 
+    private static final String ARG_USR = "currentUser";
     private AFCallBack mAFCallBack;
     private Button mLogoutButton;
 
+    private User mUser;
 
     public AccountFragment() {
         // Required empty public constructor
     }
 
-    public static AccountFragment newInstance(String param1, String param2) {
+    public static AccountFragment newInstance(User currentUser) {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
+        args.putParcelable(ARG_USR, currentUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,6 +38,9 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mUser = savedInstanceState.getParcelable(ARG_USR);
+        }
     }
 
     @Override
@@ -39,6 +49,12 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
+        myPostsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMyPostActivity();
+            }
+        });
         mLogoutButton = (Button) view.findViewById(R.id.button_logout);
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +67,36 @@ public class AccountFragment extends Fragment {
             }
         });
         Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
+        contactUsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contactUs();
+            }
+        });
         return view;
+    }
+
+    private void contactUs() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, "lix4@rose-hulman.com");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "From me");
+        intent.putExtra(Intent.EXTRA_TEXT, "Hello Li,");
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void startMyPostActivity() {
+        Intent myPostActivity = new Intent(getContext(), MyPostActivity.class);
+        startActivity(myPostActivity);
     }
 
     public void controlAButton(boolean b) {
         if (b) {
-            mLogoutButton.setVisibility(View.VISIBLE);
+//            mLogoutButton.setVisibility(View.VISIBLE);
         } else {
-            mLogoutButton.setVisibility(View.INVISIBLE);
+//            mLogoutButton.setVisibility(View.INVISIBLE);
         }
     }
 

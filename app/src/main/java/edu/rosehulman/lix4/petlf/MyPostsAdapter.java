@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,8 @@ import edu.rosehulman.lix4.petlf.models.Post;
 public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHolder> {
     private Context mContext;
     private List<Post> mPosts;
+    private FirebaseDatabase postRef;
+    private Query myPostsRef;
 
     public MyPostsAdapter(Context context) {
         mContext = context;
