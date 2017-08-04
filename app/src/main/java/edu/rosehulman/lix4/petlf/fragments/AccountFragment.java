@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import edu.rosehulman.lix4.petlf.ConstantUser;
 import edu.rosehulman.lix4.petlf.MyPostActivity;
 import edu.rosehulman.lix4.petlf.R;
 import edu.rosehulman.lix4.petlf.models.User;
@@ -31,7 +32,7 @@ public class AccountFragment extends Fragment {
     public static AccountFragment newInstance(User currentUser) {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_USER, currentUser);
+//        args.putParcelable(ARG_USER, currentUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,7 +41,7 @@ public class AccountFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUser = getArguments().getParcelable(ARG_USER);
+//            mUser = getArguments().getParcelable(ARG_USER);
         }
     }
 
@@ -50,25 +51,34 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         TextView emailTextView = (TextView) view.findViewById(R.id.email_display_text_view);
-        emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), mUser.getEmail()));
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
-        myPostsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startMyPostActivity();
-            }
-        });
         mLogoutButton = (Button) view.findViewById(R.id.button_logout);
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAFCallBack.setNavigationId(R.id.navigation_home);
-                mAFCallBack.signOut();
+        if (ConstantUser.hasUser()) {
+            emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), ConstantUser.currentUser.getEmail()));
+            myPostsButton.setVisibility(View.VISIBLE);
+            mLogoutButton.setVisibility(View.VISIBLE);
+            myPostsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startMyPostActivity();
+                }
+            });
+            mLogoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAFCallBack.setNavigationId(R.id.navigation_home);
+                    mAFCallBack.signOut();
 //                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 //                ft.replace(R.id.content, new WelcomeFragment());
 //                ft.commit();
-            }
-        });
+                }
+            });
+        } else {
+            emailTextView.setText(R.string.email_not_log_in);
+            myPostsButton.setVisibility(View.INVISIBLE);
+            mLogoutButton.setVisibility(View.INVISIBLE);
+        }
+
         Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
         contactUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,19 +102,7 @@ public class AccountFragment extends Fragment {
 
     private void startMyPostActivity() {
         Intent myPostActivity = new Intent(getContext(), MyPostActivity.class);
-        String key = "uid";
-        if (mUser != null) {
-            myPostActivity.putExtra(key, mUser.getUserId());
-        }
         startActivity(myPostActivity);
-    }
-
-    public void controlAButton(boolean b) {
-        if (b) {
-//            mLogoutButton.setVisibility(View.VISIBLE);
-        } else {
-//            mLogoutButton.setVisibility(View.INVISIBLE);
-        }
     }
 
     public interface AFCallBack {

@@ -9,17 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import edu.rosehulman.lix4.petlf.ConstantUser;
 import edu.rosehulman.lix4.petlf.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WelcomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class WelcomeFragment extends Fragment {
     private Button signinButton;
     private Button signupButton;
-
 
     private WFCallBack mWFCallBack;
 
@@ -28,19 +24,16 @@ public class WelcomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static WelcomeFragment newInstance(String param1, String param2) {
-        WelcomeFragment fragment = new WelcomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static WelcomeFragment newInstance(String param1, String param2) {
+//        WelcomeFragment fragment = new WelcomeFragment();
+//        Bundle args = new Bundle();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -48,6 +41,7 @@ public class WelcomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_welcome, container, false);
+
         signinButton = (Button) view.findViewById(R.id.signin_button);
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +56,12 @@ public class WelcomeFragment extends Fragment {
                 mWFCallBack.showSignInUpDialog(false);
             }
         });
+
+        if (!ConstantUser.hasUser()) {
+            controlButtons(false);
+        } else {
+            controlButtons(true);
+        }
         return view;
     }
 

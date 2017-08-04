@@ -17,8 +17,8 @@ public class MyPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_post);
 
         Intent intent = getIntent();
-        mUserId = intent.getStringExtra("uid");
-
+//        mUserId = intent.getStringExtra("uid");
+        mUserId = ConstantUser.currentUser.getUserId();
         Log.d("mUserId: ", mUserId + "");
         mAdapter = new MyPostsAdapter(MyPostActivity.this);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_my_post);
