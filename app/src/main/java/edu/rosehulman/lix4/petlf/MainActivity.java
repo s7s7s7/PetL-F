@@ -9,7 +9,9 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -99,6 +101,12 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             }
             if (fragmentSelected != null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Slide slideTransition = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    slideTransition = new Slide(Gravity.RIGHT);
+                    slideTransition.setDuration(200);
+                }
+                fragmentSelected.setEnterTransition(slideTransition);
                 ft.replace(R.id.content, fragmentSelected);
                 ft.commit();
             }
@@ -181,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                     //update user imageUrl and alias
                     FirebaseUser user = mAuth.getCurrentUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName("Jane Q. User")
                             .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
                             .build();
 
