@@ -1,24 +1,65 @@
 package edu.rosehulman.lix4.petlf.models;
 
+
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by phillee on 7/9/2017.
  */
 
 public class Post {
     private String userId;
-    private boolean type;
-    private String postId;
+
+    private boolean type;//false means lost, true means found
+    //    private String postId;
     private String title;
     private String description;
     private Size size;
     private String breed;
+    private String key;
 
-    enum Size {
+
+    public Post(String title, String breed, Post.Size size, String description, String uid, int type) {
+        this.title = title;
+        this.breed = breed;
+        this.size = size;
+        this.description = description;
+        userId = uid;
+        if (type == 0) {
+            this.type = false;
+        } else {
+            this.type = true;
+        }
+//        this.key = key;
+
+    }
+
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setValues(Post u) {
+        userId = u.getUserId();
+//        postId = u.getPostId();
+        title = u.getTitle();
+        description = u.getDescription();
+        size = u.getSize();
+        breed = u.getBreed();
+//        key = u.getKey();
+    }
+
+    public enum Size {
         Big, Medium, Small
     }
 
     public Post() {
-        
+
     }
 
     public String getTitle() {
@@ -69,11 +110,13 @@ public class Post {
         this.type = type;
     }
 
-    public String getPostId() {
-        return postId;
-    }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
-    }
+//    public String getPostId() {
+//        return postId;
+//    }
+//
+//    public void setPostId(String postId) {
+//        this.postId = postId;
+//    }
+
 }
