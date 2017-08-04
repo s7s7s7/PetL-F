@@ -1,18 +1,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/info_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_ = ""/>
+        android:layout_height="match_parent" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="5dp"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 
 </FrameLayout>

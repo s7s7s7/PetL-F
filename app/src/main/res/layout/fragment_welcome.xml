@@ -4,34 +4,54 @@
     android:layout_height="match_parent"
     tools:context="edu.rosehulman.lix4.petlf.fragments.WelcomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id = "@+id/lost_info_title"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LOST INFORMATION" />
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lost_info_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@+id/lost_info_title"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="21dp"
+        android:text="@string/welcome_text"
+        android:textAlignment="center"
+        android:textSize="@dimen/welcome_text_font" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lost_info_recyclerview"
-        android:text="Post New Lost → "
-        android:textSize="36sp"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="@string/most_recent_lost_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="17dp"
+        android:text="@string/most_recent_found_title" />
 
     <Button
-        android:id="@+id/add_info_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/signin_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/lost_info_recyclerview"
-        android:text="Button" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/signup_button"
+        android:layout_marginTop="41dp"
+        android:text="@string/Signin_button_text" />
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="65dp"
+        android:text="@string/Signup_button_text" />
 
 </RelativeLayout>

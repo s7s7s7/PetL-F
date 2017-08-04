@@ -1,34 +1,33 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import edu.rosehulman.lix4.petlf.InfoListAdapter;
 import edu.rosehulman.lix4.petlf.R;
+import edu.rosehulman.lix4.petlf.models.Post;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LostInfoListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LostInfoListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LostInfoListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String UID = "uid";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mType;
+    private InfoListAdapter mAdapter;
+    private String mUid;
 
-    private OnFragmentInteractionListener mListener;
+    private Callback mCallback;
+    private boolean mLoggedIn;
 
     public LostInfoListFragment() {
         // Required empty public constructor
@@ -38,16 +37,14 @@ public class LostInfoListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment LostInfoListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LostInfoListFragment newInstance(String param1, String param2) {
+    public static LostInfoListFragment newInstance(String type, String uid) {
         LostInfoListFragment fragment = new LostInfoListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, type);
+        args.putString(UID, uid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +53,13 @@ public class LostInfoListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mType = getArguments().getString(ARG_PARAM1);
+            mUid = getArguments().getString(UID);
+            if (!mUid.equals("no user here")) {
+                mLoggedIn = true;
+            } else {
+                mLoggedIn = false;
+            }
         }
     }
 
@@ -65,31 +67,102 @@ public class LostInfoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lost_info_list, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_lost_info_list, container, false);
+        RecyclerView mInfoList = (RecyclerView) rootView.findViewById(R.id.info_recycler_view);
+        mInfoList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mInfoList.setHasFixedSize(true);
+        mAdapter = new InfoListAdapter(mType);
+        mInfoList.setAdapter(mAdapter);
+
+
+        if (mLoggedIn) {
+            final View fab = rootView.findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showAddDialog();
+                }
+            });
+        }
+
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    private void showAddDialog() {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.add_lost_info_dialog, null, false);
+        final EditText titleEditView = (EditText) view.findViewById(R.id.title_edittext_view);
+        final EditText breedEditView = (EditText) view.findViewById(R.id.breed_edittext_view);
+        final EditText locationEditView = (EditText) view.findViewById(R.id.location_edittext_view);
+        final EditText colorEditView = (EditText) view.findViewById(R.id.color_edittext_view);
+        final EditText timeEditView = (EditText) view.findViewById(R.id.time_edittext_view);
+        final EditText otherinfoEditView = (EditText) view.findViewById(R.id.otherinfo_edittext_view);
+        final EditText sizeEditView = (EditText) view.findViewById(R.id.size_edittext_view);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add new Pic here.");
+        builder.setView(view);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String title = titleEditView.getText().toString();
+                String breed = breedEditView.getText().toString();
+                String size = sizeEditView.getText().toString();
+                String descripion =
+                        "Location: " + locationEditView.getText().toString()
+                                + ". Color: " + colorEditView.getText().toString()
+                                + ". Time: " + timeEditView.getText().toString()
+                                + ". OtherInfomation: " + otherinfoEditView.getText().toString();
+                int temp = 0;
+                if (mType.equals("LOST")) {
+                    temp = 0;
+                } else {
+                    temp = 1;
+                }
+
+                addPost(new Post(title, breed, turnToSIZE(size), descripion, mUid, temp));
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.create().show();
+    }
+
+    private void addPost(Post post) {
+        mAdapter.addPost(post);
+    }
+
+    private Post.Size turnToSIZE(String s) {
+        if (s.equals("Big")) {
+            return Post.Size.Big;
+        } else if (s.equals("Medium")) {
+            return Post.Size.Medium;
+        } else if (s.equals("Small")) {
+            return Post.Size.Small;
+        } else {
+            Log.e("ERROR----->>", "Input String can not be turn to a Size type.");
+            return null;
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof Callback) {
+            mCallback = (Callback) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement Callback");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mCallback = null;
     }
 
     /**
@@ -102,8 +175,8 @@ public class LostInfoListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface Callback {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onPostSelected(Post post, int position);
     }
 }
