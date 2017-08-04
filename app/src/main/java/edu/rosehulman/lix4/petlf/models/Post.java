@@ -1,5 +1,6 @@
 package edu.rosehulman.lix4.petlf.models;
 
+
 import com.google.firebase.database.Exclude;
 
 /**
@@ -8,6 +9,7 @@ import com.google.firebase.database.Exclude;
 
 public class Post {
     private String userId;
+
     private boolean type;//false means lost, true means found
     //    private String postId;
     private String title;
@@ -108,6 +110,7 @@ public class Post {
         this.type = type;
     }
 
+
 //    public String getPostId() {
 //        return postId;
 //    }
@@ -115,4 +118,5 @@ public class Post {
 //    public void setPostId(String postId) {
 //        this.postId = postId;
 //    }
+
 }

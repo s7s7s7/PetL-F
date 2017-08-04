@@ -1,7 +1,9 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -165,6 +167,7 @@ public class LostInfoListFragment extends Fragment {
         mCallback = null;
     }
 
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -175,8 +178,10 @@ public class LostInfoListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface Callback {
         // TODO: Update argument type and name
         void onPostSelected(Post post, int position);
     }
+
 }

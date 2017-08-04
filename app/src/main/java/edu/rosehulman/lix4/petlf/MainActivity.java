@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
+
 import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 import edu.rosehulman.lix4.petlf.models.Post;
@@ -117,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.C
         mNavigation.setSelectedItemId(id);
     }
 
-
     @Override
     public void onPostSelected(Post post, int position) {
         InfoDetailFragment mInfoDetailFragment = InfoDetailFragment.newInstance(post.getTitle(), post.getDescription(), post.getSize().toString(), post.getBreed());
@@ -125,4 +125,5 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.C
         ft.replace(R.id.content, mInfoDetailFragment);
         ft.commit();
     }
+
 }
