@@ -28,6 +28,7 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
     private ArrayList<Post> mPosts;
 
     public InfoListAdapter(String type) {
+        mPosts = new ArrayList<>();
         mType = type;
         if (mType.equals("LOST")) {
             mInfoRef = FirebaseDatabase.getInstance().getReference().child("lost");
@@ -91,8 +92,8 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             String key = dataSnapshot.getKey();
             Post updatePost = dataSnapshot.getValue(Post.class);
-            for(Post post:mPosts){
-                if(post.getKey().equals(key)){
+            for (Post post : mPosts) {
+                if (post.getKey().equals(key)) {
                     post.setValues(updatePost);
                     notifyDataSetChanged();
                     return;

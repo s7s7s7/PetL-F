@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -26,29 +23,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
-
 import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
-
+import edu.rosehulman.lix4.petlf.models.Post;
 import edu.rosehulman.lix4.petlf.models.User;
 
-public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack {
+public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack, LostInfoListFragment.LILCallback {
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
-
     private BottomNavigationView mNavigation;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
+
+//    private User mUser;
 
 
     @Override
@@ -66,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         mAuth = FirebaseAuth.getInstance();
         initilizeListener();
     }
+
 
     private void initilizeListener() {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -93,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         };
     }
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -104,22 +94,21 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                     fragmentSelected = mWelcomeFragment;
                     break;
                 case R.id.navigation_lost:
-                    if (mUser != null) {
-                        mCurrentFragment = LostInfoListFragment.newInstance("LOST", mUser.getUid());
+                    if (ConstantUser.hasUser()) {
+                        fragmentSelected = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUserId());
                     } else {
-                        mCurrentFragment = LostInfoListFragment.newInstance("LOST", "no user here");
+                        fragmentSelected = LostInfoListFragment.newInstance("LOST", "no user here");
                     }
                     break;
                 case R.id.navigation_found:
-                    if (mUser != null) {
-                        mCurrentFragment = LostInfoListFragment.newInstance("FOUND", mUser.getUid());
+                    if (ConstantUser.hasUser()) {
+                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUserId());
                     } else {
-                        mCurrentFragment = LostInfoListFragment.newInstance("FOUND","no user here");
+                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", "no user here");
                     }
                     break;
                 case R.id.navigation_account:
                     fragmentSelected = new AccountFragment();
-//                    switchToAccountFragment(mLoginState);
                     break;
             }
             if (fragmentSelected != null) {
@@ -137,20 +126,6 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         }
 
     };
-
-//    public void switchToWelcomeFragment(boolean login) {
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        mWelcomeFragment.controlButtons(login);
-//        ft.replace(R.id.content, mWelcomeFragment);
-//        ft.commit();
-//    }
-//
-//    public void switchToAccountFragment(boolean login) {
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        mAccountFragment.controlAButton(login);
-//        ft.replace(R.id.content, mAccountFragment);
-//        ft.commit();
-//    }
 
 
     @Override
@@ -231,5 +206,14 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
     }
+
+    @Override
+    public void onPostSelected(Post post, int position) {
+        InfoDetailFragment mInfoDetailFragment = InfoDetailFragment.newInstance(post.getTitle(), post.getDescription(), post.getSize().toString(), post.getBreed());
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content, mInfoDetailFragment);
+        ft.commit();
+    }
+
 
 }

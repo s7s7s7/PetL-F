@@ -3,7 +3,6 @@ package edu.rosehulman.lix4.petlf.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -28,7 +27,7 @@ public class LostInfoListFragment extends Fragment {
     private InfoListAdapter mAdapter;
     private String mUid;
 
-    private Callback mCallback;
+    private LILCallback mLILCallback;
     private boolean mLoggedIn;
 
     public LostInfoListFragment() {
@@ -153,18 +152,18 @@ public class LostInfoListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Callback) {
-            mCallback = (Callback) context;
+        if (context instanceof LILCallback) {
+            mLILCallback = (LILCallback) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement Callback");
+                    + " must implement LILCallback");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallback = null;
+        mLILCallback = null;
     }
 
 
@@ -179,8 +178,7 @@ public class LostInfoListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
 
-    public interface Callback {
-        // TODO: Update argument type and name
+    public interface LILCallback {
         void onPostSelected(Post post, int position);
     }
 

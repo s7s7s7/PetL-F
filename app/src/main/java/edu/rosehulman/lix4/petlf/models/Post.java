@@ -10,7 +10,6 @@ import com.google.firebase.database.Exclude;
 public class Post {
     private String uid;
     private boolean type;
-    private String postId;
     private String title;
     private String description;
     private Size size;
@@ -18,40 +17,26 @@ public class Post {
     private String key;
 
 
-
-    public Post(String title, String breed, Post.Size size, String description, String uid, int type) {
+    public Post(String title, String breed, Size size, String description, String uid, int type) {
         this.title = title;
         this.breed = breed;
         this.size = size;
         this.description = description;
-        userId = uid;
+        this.uid = uid;
         if (type == 0) {
             this.type = false;
         } else {
             this.type = true;
         }
-//        this.key = key;
-
     }
 
-
-    @Exclude
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
 
     public void setValues(Post u) {
-        userId = u.getUserId();
-//        postId = u.getPostId();
+        uid = u.getUid();
         title = u.getTitle();
         description = u.getDescription();
         size = u.getSize();
         breed = u.getBreed();
-//        key = u.getKey();
     }
 
     public enum Size {
@@ -59,7 +44,6 @@ public class Post {
     }
 
     public Post() {
-
 
     }
 
@@ -120,13 +104,5 @@ public class Post {
         this.type = type;
     }
 
-
-//    public String getPostId() {
-//        return postId;
-//    }
-//
-//    public void setPostId(String postId) {
-//        this.postId = postId;
-//    }
 
 }
