@@ -8,15 +8,15 @@ import com.google.firebase.database.Exclude;
  */
 
 public class Post {
-    private String userId;
-
-    private boolean type;//false means lost, true means found
-    //    private String postId;
+    private String uid;
+    private boolean type;
+    private String postId;
     private String title;
     private String description;
     private Size size;
     private String breed;
     private String key;
+
 
 
     public Post(String title, String breed, Post.Size size, String description, String uid, int type) {
@@ -60,6 +60,16 @@ public class Post {
 
     public Post() {
 
+
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getTitle() {
@@ -94,12 +104,12 @@ public class Post {
         this.breed = breed;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public boolean isType() {

@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/button"
         android:layout_alignParentTop="true"
+        android:text="TEST"
         android:textSize="30dp" />
 
     <Button

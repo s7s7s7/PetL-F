@@ -5,7 +5,7 @@
     tools:context="edu.rosehulman.lix4.petlf.fragments.AccountFragment">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/profile_pic_image_view"
         android:layout_width="@dimen/profile_pic_width"
         android:layout_height="@dimen/profile_pic_height"
         android:layout_alignParentTop="true"
@@ -18,7 +18,7 @@
         android:id="@+id/email_display_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/profile_pic_image_view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="11dp"
         android:text="@string/email_diaplay_text"

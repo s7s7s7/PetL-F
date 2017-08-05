@@ -2,51 +2,37 @@ package edu.rosehulman.lix4.petlf.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import edu.rosehulman.lix4.petlf.ConstantUser;
+import edu.rosehulman.lix4.petlf.MyPostActivity;
 import edu.rosehulman.lix4.petlf.R;
+import edu.rosehulman.lix4.petlf.models.User;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AccountFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private CallBack mCallBack;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_USER = "currentUser";
+    private AFCallBack mAFCallBack;
+    private Button mLogoutButton;
 
+    private User mUser;
 
     public AccountFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AccountFragment newInstance(String param1, String param2) {
+    public static AccountFragment newInstance(User currentUser) {
         AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+//        args.putParcelable(ARG_USER, currentUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +41,7 @@ public class AccountFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mUser = getArguments().getParcelable(ARG_USER);
         }
     }
 
@@ -65,40 +50,82 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+        TextView emailTextView = (TextView) view.findViewById(R.id.email_display_text_view);
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
-        Button logOutButton = (Button) view.findViewById(R.id.button_logout);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
+        mLogoutButton = (Button) view.findViewById(R.id.button_logout);
+        if (ConstantUser.hasUser()) {
+            emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), ConstantUser.currentUser.getEmail()));
+            myPostsButton.setVisibility(View.VISIBLE);
+            mLogoutButton.setVisibility(View.VISIBLE);
+            myPostsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startMyPostActivity();
+                }
+            });
+            mLogoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAFCallBack.setNavigationId(R.id.navigation_home);
+                    mAFCallBack.signOut();
+//                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//                ft.replace(R.id.content, new WelcomeFragment());
+//                ft.commit();
+                }
+            });
+        } else {
+            emailTextView.setText(R.string.email_not_log_in);
+            myPostsButton.setVisibility(View.INVISIBLE);
+            mLogoutButton.setVisibility(View.INVISIBLE);
+        }
+
+        Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
+        contactUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallBack.setNavigationId(R.id.navigation_home);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content, new WelcomeFragment());
-                ft.commit();
+                contactUs();
             }
         });
-        Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
         return view;
     }
 
-    public interface CallBack {
+    private void contactUs() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, "lix4@rose-hulman.com");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "From me");
+        intent.putExtra(Intent.EXTRA_TEXT, "Hello Li,");
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void startMyPostActivity() {
+        Intent myPostActivity = new Intent(getContext(), MyPostActivity.class);
+        startActivity(myPostActivity);
+    }
+
+    public interface AFCallBack {
         void setNavigationId(int id);
+
+        void signOut();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CallBack) {
-            mCallBack = (CallBack) context;
+        if (context instanceof AFCallBack) {
+            mAFCallBack = (AFCallBack) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement CallBack");
+                    + " must implement AFCallBack");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallBack = null;
+        mAFCallBack = null;
     }
 
 }

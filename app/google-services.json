@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "500891945181",
+    "firebase_url": "https://final-project-82dcf.firebaseio.com",
+    "project_id": "final-project-82dcf",
+    "storage_bucket": "final-project-82dcf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500891945181:android:a1231027c5a28587",
+        "android_client_info": {
+          "package_name": "edu.rosehulman.lix4.petlf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "500891945181-nmfcc7mbpqrsen19po3t8ssqqe2bpq55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5RB72MADgB32QR8bICYCWrvx0LSP5WKA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
