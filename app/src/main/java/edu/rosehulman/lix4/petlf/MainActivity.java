@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -23,9 +26,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
+import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
+
 import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
+
 import edu.rosehulman.lix4.petlf.models.User;
 
 public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack {
@@ -36,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +104,18 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                     fragmentSelected = mWelcomeFragment;
                     break;
                 case R.id.navigation_lost:
-                    fragmentSelected = new LostInfoListFragment();
+                    if (mUser != null) {
+                        mCurrentFragment = LostInfoListFragment.newInstance("LOST", mUser.getUid());
+                    } else {
+                        mCurrentFragment = LostInfoListFragment.newInstance("LOST", "no user here");
+                    }
                     break;
                 case R.id.navigation_found:
+                    if (mUser != null) {
+                        mCurrentFragment = LostInfoListFragment.newInstance("FOUND", mUser.getUid());
+                    } else {
+                        mCurrentFragment = LostInfoListFragment.newInstance("FOUND","no user here");
+                    }
                     break;
                 case R.id.navigation_account:
                     fragmentSelected = new AccountFragment();
@@ -208,4 +231,5 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
     }
+
 }
