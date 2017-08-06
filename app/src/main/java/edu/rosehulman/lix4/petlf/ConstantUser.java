@@ -20,7 +20,7 @@ public class ConstantUser {
         currentUser = user;
     }
 
-    public static void setCurrentAuth(FirebaseAuth auth){
+    public static void setCurrentAuth(FirebaseAuth auth) {
         currentAuth = auth;
     }
 

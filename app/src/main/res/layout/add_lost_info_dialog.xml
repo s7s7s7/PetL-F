@@ -33,7 +33,7 @@
         android:layout_toEndOf="@+id/title_text_view"
         android:layout_toRightOf="@+id/title_text_view"
         android:inputType="text"
-        android:text="Input title here" />
+        android:hint="Input title here" />
 
     <TextView
         android:id="@+id/breed_text_view"
@@ -57,7 +57,7 @@
         android:layout_toEndOf="@+id/breed_text_view"
         android:layout_toRightOf="@+id/breed_text_view"
         android:inputType="text"
-        android:text="Input breed here" />
+        android:hint="Input breed here" />
 
     <TextView
         android:id="@+id/location_text_view"
@@ -81,7 +81,7 @@
         android:layout_toEndOf="@+id/location_text_view"
         android:layout_toRightOf="@+id/location_text_view"
         android:inputType="text"
-        android:text="Input location here" />
+        android:hint="Input location here" />
 
     <TextView
         android:id="@+id/color_text_view"
@@ -105,7 +105,7 @@
         android:layout_toEndOf="@+id/color_text_view"
         android:layout_toRightOf="@+id/color_text_view"
         android:inputType="text"
-        android:text="Input color here" />
+        android:hint="Input color here" />
 
     <TextView
         android:id="@+id/time_text_view"
@@ -129,7 +129,7 @@
         android:layout_toEndOf="@+id/time_text_view"
         android:layout_toRightOf="@+id/time_text_view"
         android:inputType="text"
-        android:text="Input time here" />
+        android:hint="Input time here" />
 
     <TextView
         android:id="@+id/size_text_view"
@@ -153,7 +153,7 @@
         android:layout_toEndOf="@+id/size_text_view"
         android:layout_toRightOf="@+id/size_text_view"
         android:inputType="text"
-        android:text="Input size here" />
+        android:hint="Input size here" />
 
     <TextView
         android:id="@+id/otherinfo_text_view"
@@ -177,7 +177,7 @@
         android:layout_toEndOf="@+id/otherinfo_text_view"
         android:layout_toRightOf="@+id/otherinfo_text_view"
         android:inputType="text"
-        android:text="Input any other info here" />
+        android:hint="Input any other info here" />
 
     <TextView
         android:id="@+id/uploadimage_text_view"

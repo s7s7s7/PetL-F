@@ -22,21 +22,29 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
 import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
+import edu.rosehulman.lix4.petlf.fragments.MyPostFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 import edu.rosehulman.lix4.petlf.models.Post;
 import edu.rosehulman.lix4.petlf.models.User;
 
-public class MainActivity extends AppCompatActivity implements AccountFragment.AFCallBack, WelcomeFragment.WFCallBack, LostInfoListFragment.LILCallback {
+public class MainActivity extends AppCompatActivity implements
+        AccountFragment.AFCallBack,
+        WelcomeFragment.WFCallBack,
+        LostInfoListFragment.LILCallback,
+        MyPostFragment.MPFCallback {
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
     private BottomNavigationView mNavigation;
-//    ConstantUser.currentUser;
+    //    ConstantUser.currentUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
+    private MyPostFragment myPostFragment;
 
 //    private User mUser;
 
@@ -136,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         mNavigation.setSelectedItemId(id);
     }
 
+
     @Override
     public void signOut() {
         ConstantUser.currentAuth.signOut();
@@ -220,4 +229,68 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
     }
 
 
+    @Override
+    public void editMyPost(final Post post) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit your post");
+        View view = getLayoutInflater().inflate(R.layout.edit_post_dialog, null);
+        builder.setView(view);
+
+        final EditText titleEditView = (EditText) view.findViewById(R.id.post_change_title_edit);
+        final EditText breedEditView = (EditText) view.findViewById(R.id.post_change_breed_edit);
+        final EditText sizeEditView = (EditText) view.findViewById(R.id.post_change_description_edit);
+        final EditText descriptionEditView = (EditText) view.findViewById(R.id.post_change_size_edit);
+
+
+        titleEditView.setHint(post.getTitle());
+        breedEditView.setHint(post.getBreed());
+        descriptionEditView.setHint(post.getDescription());
+        sizeEditView.setHint(post.getSize());
+
+
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String description = post.getDescription();
+                String title = post.getTitle();
+                String size = post.getSize();
+                String breed = post.getBreed();
+
+                if (!titleEditView.getText().toString().equals("")) {
+                    title = titleEditView.getText().toString();
+                }
+                if (!breedEditView.getText().toString().equals("")) {
+                    breed = titleEditView.getText().toString();
+                }
+                if (!sizeEditView.getText().toString().equals("")) {
+                    size = titleEditView.getText().toString();
+                }
+                if (!descriptionEditView.getText().toString().equals("")) {
+                    description = descriptionEditView.getText().toString();
+                }
+
+                myPostFragment.update(post, title, breed, size, description);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel,null);
+        builder.create().show();
+    }
+
+    @Override
+    public void deleteMyPost(Post post) {
+//        DatabaseReference tempRef = FirebaseDatabase.getInstance().getReference();
+//        tempRef.child(post.getKey()).removeValue();
+        myPostFragment.remove(post);
+    }
+
+    @Override
+    public void switchToMyPosts() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        myPostFragment = new MyPostFragment();
+        ft.replace(R.id.content, myPostFragment);
+        ft.addToBackStack("myPosts");
+        ft.commit();
+    }
 }

@@ -4,21 +4,26 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.rosehulman.lix4.petlf.MyPostsAdapter;
 import edu.rosehulman.lix4.petlf.R;
+import edu.rosehulman.lix4.petlf.models.Post;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyPostFragment.OnFragmentInteractionListener} interface
+ * {@link MPFCallback} interface
  * to handle interaction events.
  */
 public class MyPostFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private MPFCallback mpfCallback;
+    private MyPostsAdapter mAdapter;
 
     public MyPostFragment() {
         // Required empty public constructor
@@ -29,31 +34,38 @@ public class MyPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_post, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        View rootView = inflater.inflate(R.layout.fragment_my_post, container, false);
+        RecyclerView view = (RecyclerView) rootView.findViewById(R.id.recycler_view_my_post);
+        view.setLayoutManager(new LinearLayoutManager(getActivity()));
+        view.setHasFixedSize(true);
+        mAdapter = new MyPostsAdapter(mpfCallback);
+        view.setAdapter(mAdapter);
+        return rootView;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof MPFCallback) {
+            mpfCallback = (MPFCallback) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MPFCallback");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mpfCallback = null;
+    }
+
+    public void remove(Post post) {
+        mAdapter.remove(post);
+    }
+
+    public void update(Post post, String title, String breed, String size, String description) {
+        mAdapter.update(post, title, breed, size, description);
     }
 
     /**
@@ -66,8 +78,10 @@ public class MyPostFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface MPFCallback {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void editMyPost(Post post);
+
+        void deleteMyPost(Post post);
     }
 }
