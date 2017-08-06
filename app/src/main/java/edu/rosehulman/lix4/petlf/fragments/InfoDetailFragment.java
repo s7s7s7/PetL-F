@@ -28,7 +28,7 @@ public class InfoDetailFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mTitle;
     private String mDescription;
-    private Post.Size mSize;
+    private String mSize;
     private String mBreed;
 
 
@@ -61,22 +61,22 @@ public class InfoDetailFragment extends Fragment {
             mTitle = getArguments().getString(TITLE);
             mBreed = getArguments().getString(BREED);
             mDescription = getArguments().getString(DESCRIPTION);
-            mSize = turnToSIZE(getArguments().getString(SIZE));
+            mSize = getArguments().getString(SIZE);
         }
     }
 
-    private Post.Size turnToSIZE(String s) {
-        if (s.equals("Big")) {
-            return Post.Size.Big;
-        } else if (s.equals("Medium")) {
-            return Post.Size.Medium;
-        } else if (s.equals("Small")) {
-            return Post.Size.Small;
-        } else {
-            Log.e("ERROR----->>", "Input String can not be turn to a Size type.");
-            return null;
-        }
-    }
+//    private Post.Size turnToSIZE(String s) {
+//        if (s.equals("Big")) {
+//            return Post.Size.Big;
+//        } else if (s.equals("Medium")) {
+//            return Post.Size.Medium;
+//        } else if (s.equals("Small")) {
+//            return Post.Size.Small;
+//        } else {
+//            Log.e("ERROR----->>", "Input String can not be turn to a Size type.");
+//            return null;
+//        }
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,19 +90,19 @@ public class InfoDetailFragment extends Fragment {
 
         titleView.setText(mTitle);
         descripView.setText(mDescription);
-        sizeView.setText(turnToSTRING(mSize));
+        sizeView.setText(mSize);
         breedView.setText(mBreed);
         return view;
     }
 
-    private String turnToSTRING(Post.Size mSize) {
-        if (mSize.equals(Post.Size.Big)) {
-            return "Big";
-        } else if (mSize.equals( Post.Size.Medium)) {
-            return "Medium";
-        } else {
-            return "Small";
-        }
-    }
+//    private String turnToSTRING(Post.Size mSize) {
+//        if (mSize.equals(Post.Size.Big)) {
+//            return "Big";
+//        } else if (mSize.equals( Post.Size.Medium)) {
+//            return "Medium";
+//        } else {
+//            return "Small";
+//        }
+//    }
 
 }

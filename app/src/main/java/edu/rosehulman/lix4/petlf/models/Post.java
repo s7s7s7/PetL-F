@@ -12,12 +12,12 @@ public class Post {
     private boolean type;
     private String title;
     private String description;
-    private Size size;
+    private String size;
     private String breed;
     private String key;
 
 
-    public Post(String title, String breed, Size size, String description, String uid, int type) {
+    public Post(String title, String breed, String size, String description, String uid, int type) {
         this.title = title;
         this.breed = breed;
         this.size = size;
@@ -39,9 +39,9 @@ public class Post {
         breed = u.getBreed();
     }
 
-    public enum Size {
-        Big, Medium, Small
-    }
+//    public enum Size {
+//        Big, Medium, Small
+//    }
 
     public Post() {
 
@@ -72,11 +72,11 @@ public class Post {
         this.description = description;
     }
 
-    public Size getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(Size size) {
+    public void setSize(String size) {
         this.size = size;
     }
 

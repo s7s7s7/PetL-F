@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
     private BottomNavigationView mNavigation;
-    private FirebaseAuth mAuth;
+//    ConstantUser.currentUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
 
@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         ft.add(R.id.content, mWelcomeFragment);
         ft.commit();
 
-        mAuth = FirebaseAuth.getInstance();
+        ConstantUser.setCurrentAuth(FirebaseAuth.getInstance());
+
+//        ConstantUser.setCurrentUser(FirebaseAuth.getInstance());
+//        ConstantUser.currentUser = FirebaseAuth.getInstance();
         initilizeListener();
     }
 
@@ -64,11 +67,11 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    User newUser = new User();
-                    newUser.setUserId(user.getUid());
-                    newUser.setEmail(user.getEmail());
-                    newUser.setImageUrl(user.getPhotoUrl());
-                    ConstantUser.setCurrentUser(newUser);
+//                    User newUser = new User();
+//                    newUser.setUserId(user.getUid());
+//                    newUser.setEmail(user.getEmail());
+//                    newUser.setImageUrl(user.getPhotoUrl());
+                    ConstantUser.setCurrentUser(user);
                 } else {
                     ConstantUser.removeCurrentUser();
                 }
@@ -95,14 +98,14 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                     break;
                 case R.id.navigation_lost:
                     if (ConstantUser.hasUser()) {
-                        fragmentSelected = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUserId());
+                        fragmentSelected = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUid());
                     } else {
                         fragmentSelected = LostInfoListFragment.newInstance("LOST", "no user here");
                     }
                     break;
                 case R.id.navigation_found:
                     if (ConstantUser.hasUser()) {
-                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUserId());
+                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUid());
                     } else {
                         fragmentSelected = LostInfoListFragment.newInstance("FOUND", "no user here");
                     }
@@ -135,21 +138,21 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
 
     @Override
     public void signOut() {
-        mAuth.signOut();
+        ConstantUser.currentAuth.signOut();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        mAuth.addAuthStateListener(mAuthStateListener);
+        ConstantUser.currentAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (mAuthStateListener != null) {
-            mAuth.removeAuthStateListener(mAuthStateListener);
+            ConstantUser.currentAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
@@ -176,16 +179,16 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
                 String password = passwordEditText.getText().toString();
                 if (switsh) {
                     //sign in
-                    mAuth.signInWithEmailAndPassword(email, password)
+                    ConstantUser.currentAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                 } else {
                     //sign up and login user in automatically
-                    mAuth.createUserWithEmailAndPassword(email, password)
+                    ConstantUser.currentAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
-                    mAuth.signInWithEmailAndPassword(email, password)
+                    ConstantUser.currentAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                     //update user imageUrl and alias
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    FirebaseUser user = ConstantUser.currentAuth.getCurrentUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
                             .build();
@@ -212,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.A
         InfoDetailFragment mInfoDetailFragment = InfoDetailFragment.newInstance(post.getTitle(), post.getDescription(), post.getSize().toString(), post.getBreed());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, mInfoDetailFragment);
+        ft.addToBackStack("detail");
         ft.commit();
     }
 
