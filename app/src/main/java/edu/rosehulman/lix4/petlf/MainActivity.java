@@ -2,6 +2,7 @@ package edu.rosehulman.lix4.petlf;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
     private MyPostFragment myPostFragment;
+    private LostInfoListFragment mInfoFragment;
+    final private static int PICK_IMAGE_REQUEST = 1;
 
 //    private User mUser;
 
@@ -106,16 +109,20 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case R.id.navigation_lost:
                     if (ConstantUser.hasUser()) {
-                        fragmentSelected = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUid());
+                        mInfoFragment = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUid());
+                        fragmentSelected = mInfoFragment;
                     } else {
-                        fragmentSelected = LostInfoListFragment.newInstance("LOST", "no user here");
+                        mInfoFragment = LostInfoListFragment.newInstance("LOST", "no user here");
+                        fragmentSelected = mInfoFragment;
                     }
                     break;
                 case R.id.navigation_found:
                     if (ConstantUser.hasUser()) {
-                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUid());
+                        mInfoFragment = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUid());
+                        fragmentSelected = mInfoFragment;
                     } else {
-                        fragmentSelected = LostInfoListFragment.newInstance("FOUND", "no user here");
+                        mInfoFragment = LostInfoListFragment.newInstance("FOUND", "no user here");
+                        fragmentSelected = mInfoFragment;
                     }
                     break;
                 case R.id.navigation_account:
@@ -228,6 +235,26 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
+    @Override
+    public void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri file = data.getData();
+
+            mInfoFragment.uploadImage(file);
+        }
+    }
+
 
     @Override
     public void editMyPost(final Post post) {
@@ -246,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements
         breedEditView.setHint(post.getBreed());
         descriptionEditView.setHint(post.getDescription());
         sizeEditView.setHint(post.getSize());
-
 
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -274,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        builder.setNegativeButton(android.R.string.cancel,null);
+        builder.setNegativeButton(android.R.string.cancel, null);
         builder.create().show();
     }
 

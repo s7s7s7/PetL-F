@@ -1,6 +1,7 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import edu.rosehulman.lix4.petlf.R;
 import edu.rosehulman.lix4.petlf.models.Post;
@@ -30,6 +33,7 @@ public class InfoDetailFragment extends Fragment {
     private String mDescription;
     private String mSize;
     private String mBreed;
+    private Uri mImage;
 
 
     public InfoDetailFragment() {
@@ -87,6 +91,14 @@ public class InfoDetailFragment extends Fragment {
         TextView descripView = (TextView) view.findViewById(R.id.info_detail_description);
         TextView sizeView = (TextView) view.findViewById(R.id.info_detail_size);
         TextView breedView = (TextView) view.findViewById(R.id.info_detail_breed);
+        TextView imageText = (TextView) view.findViewById(R.id.view_image_text);
+
+        imageText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         titleView.setText(mTitle);
         descripView.setText(mDescription);
