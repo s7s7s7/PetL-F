@@ -12,9 +12,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
+import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.models.Post;
 
 /**
@@ -23,18 +25,31 @@ import edu.rosehulman.lix4.petlf.models.Post;
 
 public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHolder> {
 
+    private Query myInfoRef;
     private String mType;
     private DatabaseReference mInfoRef;
     private ArrayList<Post> mPosts;
+    private LostInfoListFragment.LILCallback mLILCallback;
 
-    public InfoListAdapter(String type) {
+    public InfoListAdapter(String type, LostInfoListFragment.LILCallback callback) {
         mPosts = new ArrayList<>();
         mType = type;
+//        if (mType.equals("LOST")) {
+//            mInfoRef = FirebaseDatabase.getInstance().getReference().child("lost");
+//        } else {
+//            mInfoRef = FirebaseDatabase.getInstance().getReference().child("found");
+//        }
+
+        mInfoRef = FirebaseDatabase.getInstance().getReference();
         if (mType.equals("LOST")) {
-            mInfoRef = FirebaseDatabase.getInstance().getReference().child("lost");
+            myInfoRef = mInfoRef.orderByChild("type").equalTo(false);
         } else {
-            mInfoRef = FirebaseDatabase.getInstance().getReference().child("found");
+            myInfoRef = mInfoRef.orderByChild("type").equalTo(true);
         }
+
+        mLILCallback = callback;
+
+        myInfoRef.addChildEventListener(new PostChildEventListener());
 
 
     }
@@ -54,7 +69,7 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //go to detail fragment
+                mLILCallback.onPostSelected(post, temp);
             }
         });
     }

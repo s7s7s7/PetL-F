@@ -73,18 +73,21 @@ public class LostInfoListFragment extends Fragment {
         RecyclerView mInfoList = (RecyclerView) rootView.findViewById(R.id.info_recycler_view);
         mInfoList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mInfoList.setHasFixedSize(true);
-        mAdapter = new InfoListAdapter(mType);
+        mAdapter = new InfoListAdapter(mType, mLILCallback);
         mInfoList.setAdapter(mAdapter);
 
+        final View fab = rootView.findViewById(R.id.fab);
 
         if (mLoggedIn) {
-            final View fab = rootView.findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     showAddDialog();
                 }
             });
+        } else {
+            fab.setVisibility(View.GONE);
         }
 
         return rootView;
@@ -123,7 +126,7 @@ public class LostInfoListFragment extends Fragment {
                     temp = 1;
                 }
 
-                addPost(new Post(title, breed, turnToSIZE(size), descripion, mUid, temp));
+                addPost(new Post(title, breed, size, descripion, mUid, temp));
             }
         });
 
@@ -135,18 +138,18 @@ public class LostInfoListFragment extends Fragment {
         mAdapter.addPost(post);
     }
 
-    private Post.Size turnToSIZE(String s) {
-        if (s.equals("Big")) {
-            return Post.Size.Big;
-        } else if (s.equals("Medium")) {
-            return Post.Size.Medium;
-        } else if (s.equals("Small")) {
-            return Post.Size.Small;
-        } else {
-            Log.e("ERROR----->>", "Input String can not be turn to a Size type.");
-            return null;
-        }
-    }
+//    private Post.Size turnToSIZE(String s) {
+//        if (s.equals("Big")) {
+//            return Post.Size.Big;
+//        } else if (s.equals("Medium")) {
+//            return Post.Size.Medium;
+//        } else if (s.equals("Small")) {
+//            return Post.Size.Small;
+//        } else {
+//            Log.e("ERROR----->>", "Input String can not be turn to a Size type.");
+//            return null;
+//        }
+//    }
 
 
     @Override

@@ -60,7 +60,8 @@ public class AccountFragment extends Fragment {
             myPostsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startMyPostActivity();
+//                    startMyPostActivity();
+                    mAFCallBack.switchToMyPosts();
                 }
             });
             mLogoutButton.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,12 @@ public class AccountFragment extends Fragment {
 
     public interface AFCallBack {
         void setNavigationId(int id);
+
+//        void deletePost(Post post);
+//
+//        void editPost(Post post);
+
+        void switchToMyPosts();
 
         void signOut();
     }
