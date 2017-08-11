@@ -3,6 +3,8 @@ package edu.rosehulman.lix4.petlf.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -12,13 +14,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import edu.rosehulman.lix4.petlf.InfoListAdapter;
 import edu.rosehulman.lix4.petlf.R;
 import edu.rosehulman.lix4.petlf.models.Post;
 
-public class LostInfoListFragment extends Fragment {
+public class LostInfoListFragment extends Fragment{
     private static final String ARG_PARAM1 = "param1";
     private static final String UID = "uid";
 
@@ -103,10 +107,21 @@ public class LostInfoListFragment extends Fragment {
         final EditText timeEditView = (EditText) view.findViewById(R.id.time_edittext_view);
         final EditText otherinfoEditView = (EditText) view.findViewById(R.id.otherinfo_edittext_view);
         final EditText sizeEditView = (EditText) view.findViewById(R.id.size_edittext_view);
+        final TextView uploadText = (TextView) view.findViewById(R.id.uploadimage_text_view);
+        final Button uploadButton = (Button) view.findViewById(R.id.uploadimage_button);
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLILCallback.chooseImage();
+            }
+        });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add new Pic here.");
         builder.setView(view);
+
+
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
@@ -169,6 +184,10 @@ public class LostInfoListFragment extends Fragment {
         mLILCallback = null;
     }
 
+    public void uploadImage(Uri file) {
+        mAdapter.uploadImage(file);
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -183,6 +202,8 @@ public class LostInfoListFragment extends Fragment {
 
     public interface LILCallback {
         void onPostSelected(Post post, int position);
+
+        void chooseImage();
     }
 
 }
