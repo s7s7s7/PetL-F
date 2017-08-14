@@ -1,6 +1,7 @@
 package edu.rosehulman.lix4.petlf;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,11 +11,15 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,8 +28,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
@@ -32,7 +35,6 @@ import edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment;
 import edu.rosehulman.lix4.petlf.fragments.MyPostFragment;
 import edu.rosehulman.lix4.petlf.fragments.WelcomeFragment;
 import edu.rosehulman.lix4.petlf.models.Post;
-import edu.rosehulman.lix4.petlf.models.User;
 
 public class MainActivity extends AppCompatActivity implements
         AccountFragment.AFCallBack,
@@ -48,8 +50,11 @@ public class MainActivity extends AppCompatActivity implements
     private MyPostFragment myPostFragment;
     private LostInfoListFragment mInfoFragment;
     final private static int PICK_IMAGE_REQUEST = 1;
+    private EditText mEmailEditText;
+    private EditText mPasswordEditText;
+    private EditText mConfirmationPasswordEditText;
 
-//    private User mUser;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -64,10 +69,8 @@ public class MainActivity extends AppCompatActivity implements
         ft.add(R.id.content, mWelcomeFragment);
         ft.commit();
 
-        ConstantUser.setCurrentAuth(FirebaseAuth.getInstance());
+        mAuth = FirebaseAuth.getInstance();
 
-//        ConstantUser.setCurrentUser(FirebaseAuth.getInstance());
-//        ConstantUser.currentUser = FirebaseAuth.getInstance();
         initilizeListener();
     }
 
@@ -78,10 +81,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-//                    User newUser = new User();
-//                    newUser.setUserId(user.getUid());
-//                    newUser.setEmail(user.getEmail());
-//                    newUser.setImageUrl(user.getPhotoUrl());
                     ConstantUser.setCurrentUser(user);
                 } else {
                     ConstantUser.removeCurrentUser();
@@ -93,9 +92,18 @@ public class MainActivity extends AppCompatActivity implements
             public void onComplete(@NonNull Task task) {
                 if (!task.isSuccessful()) {
                     Log.d("onComplete failed: ", task.getException().toString());
+                    showError(task.getException().getMessage());
                 }
             }
         };
+    }
+
+    private void showError(String error) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.error);
+        builder.setMessage(error);
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.show();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -154,21 +162,21 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void signOut() {
-        ConstantUser.currentAuth.signOut();
+        mAuth.signOut();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        ConstantUser.currentAuth.addAuthStateListener(mAuthStateListener);
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (mAuthStateListener != null) {
-            ConstantUser.currentAuth.removeAuthStateListener(mAuthStateListener);
+            mAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
@@ -176,13 +184,33 @@ public class MainActivity extends AppCompatActivity implements
     public void showSignInUpDialog(final boolean switsh) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_signup, null);
-        final EditText emailEditText = (EditText) view.findViewById(R.id.edit_username_text_signup);
-        final EditText passwordEditText = (EditText) view.findViewById(R.id.edit_password_text_signup);
-        final EditText confirmationPasswordEditText = (EditText) view.findViewById(R.id.edit_password_confirm_text_signup);
+        mEmailEditText = (EditText) view.findViewById(R.id.edit_username_text_signup);
+        mPasswordEditText = (EditText) view.findViewById(R.id.edit_password_text_signup);
+        mConfirmationPasswordEditText = (EditText) view.findViewById(R.id.edit_password_confirm_text_signup);
+        mEmailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_ACTION_NEXT) {
+                    mEmailEditText.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mEmailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_NULL) {
+                    signin();
+                    return true;
+                }
+                return false;
+            }
+        });
         TextView confirmationPasswordTitle = (TextView) view.findViewById(R.id.dialog_confirm_email_title_signup);
         if (switsh) {
             builder.setTitle(R.string.signin_dialog_title);
-            confirmationPasswordEditText.setVisibility(View.INVISIBLE);
+            mConfirmationPasswordEditText.setVisibility(View.INVISIBLE);
             confirmationPasswordTitle.setVisibility(View.INVISIBLE);
         } else {
             builder.setTitle(R.string.signup_dialog_title);
@@ -191,22 +219,23 @@ public class MainActivity extends AppCompatActivity implements
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                String email = mEmailEditText.getText().toString();
+                String password = mPasswordEditText.getText().toString();
                 if (switsh) {
                     //sign in
-                    ConstantUser.currentAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(mOnCompleteListener);
+//                    mAuth.signInWithEmailAndPassword(email, password)
+//                            .addOnCompleteListener(mOnCompleteListener);
+                    signin();
                 } else {
                     //sign up and login user in automatically
-                    ConstantUser.currentAuth.createUserWithEmailAndPassword(email, password)
+                    mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
-                    ConstantUser.currentAuth.signInWithEmailAndPassword(email, password)
+                    mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                     //update user imageUrl and alias
-                    FirebaseUser user = ConstantUser.currentAuth.getCurrentUser();
+                    FirebaseUser user = mAuth.getCurrentUser();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+//                            .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
                             .build();
 
                     user.updateProfile(profileUpdates)
@@ -224,6 +253,48 @@ public class MainActivity extends AppCompatActivity implements
         });
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
+    }
+
+    public void signin() {
+        mEmailEditText.setError(null);
+        mPasswordEditText.setError(null);
+
+        String email = mEmailEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+
+        boolean cancelLogin = false;
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            showError(getString(R.string.invalid_password));
+            cancelLogin = true;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            showError(getString(R.string.email_required));
+            cancelLogin = true;
+        } else if (!isEmailValid(email)) {
+            showError(getString(R.string.invalid_email));
+            cancelLogin = true;
+        }
+
+        if (!cancelLogin) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(mOnCompleteListener);
+            hideKeyboard();
+        }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEmailEditText.getWindowToken(), 0);
+    }
+
+    private boolean isEmailValid(String email) {
+        return email.contains("@");
+    }
+
+    private boolean isPasswordValid(String password) {
+        return password.length() >= 6;
     }
 
     @Override

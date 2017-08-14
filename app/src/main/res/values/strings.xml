@@ -25,4 +25,8 @@
     <string name="email_diaplay_text">Email: %s</string>
     <string name="button_delete">Delete</string>
     <string name="email_not_log_in">You Are Not Login!</string>
+    <string name="error">Error!</string>
+    <string name="invalid_password">Password is too short!</string>
+    <string name="email_required">Email is required!</string>
+    <string name="invalid_email">The email address is invalid!</string>
 </resources>

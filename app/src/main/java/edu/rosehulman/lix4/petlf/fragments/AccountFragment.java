@@ -93,9 +93,9 @@ public class AccountFragment extends Fragment {
     private void contactUs() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, "lix4@rose-hulman.com");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"lix4@rose-hulman.edu"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "From me");
-        intent.putExtra(Intent.EXTRA_TEXT, "Hello Li,");
+        intent.putExtra(Intent.EXTRA_TEXT, "Hello Pet L&F Development Team,");
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
