@@ -41,9 +41,12 @@ public class MainActivity extends AppCompatActivity implements
         WelcomeFragment.WFCallBack,
         LostInfoListFragment.LILCallback,
         MyPostFragment.MPFCallback {
+
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
+    private String mTag = null;
     private BottomNavigationView mNavigation;
+
     //    ConstantUser.currentUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private OnCompleteListener mOnCompleteListener;
@@ -52,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements
     final private static int PICK_IMAGE_REQUEST = 1;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
+
     private EditText mConfirmationPasswordEditText;
+
 
     private FirebaseAuth mAuth;
 
@@ -66,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.content, mWelcomeFragment);
+        mTag = "welcome";
+        ft.add(R.id.content, mWelcomeFragment, mTag);
         ft.commit();
 
         mAuth = FirebaseAuth.getInstance();
@@ -74,17 +80,25 @@ public class MainActivity extends AppCompatActivity implements
         initilizeListener();
     }
 
-
     private void initilizeListener() {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+
                     ConstantUser.setCurrentUser(user);
                 } else {
                     ConstantUser.removeCurrentUser();
                 }
+
+
+                //Refresh the fragment after login state changed.
+                Fragment frg = getSupportFragmentManager().findFragmentByTag(mTag);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.detach(frg);
+                ft.attach(frg);
+                ft.commit();
             }
         };
         mOnCompleteListener = new OnCompleteListener() {
@@ -114,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     fragmentSelected = mWelcomeFragment;
+                    mTag = "welcome";
                     break;
                 case R.id.navigation_lost:
+                    mTag = "infoList";
                     if (ConstantUser.hasUser()) {
                         mInfoFragment = LostInfoListFragment.newInstance("LOST", ConstantUser.currentUser.getUid());
                         fragmentSelected = mInfoFragment;
@@ -125,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                     break;
                 case R.id.navigation_found:
+                    mTag = "infoList";
                     if (ConstantUser.hasUser()) {
                         mInfoFragment = LostInfoListFragment.newInstance("FOUND", ConstantUser.currentUser.getUid());
                         fragmentSelected = mInfoFragment;
@@ -134,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                     break;
                 case R.id.navigation_account:
+                    mTag = "account";
                     fragmentSelected = new AccountFragment();
                     break;
             }
@@ -145,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
                     slideTransition.setDuration(200);
                 }
                 fragmentSelected.setEnterTransition(slideTransition);
-                ft.replace(R.id.content, fragmentSelected);
+                ft.replace(R.id.content, fragmentSelected, mTag);
                 ft.commit();
             }
             return true;

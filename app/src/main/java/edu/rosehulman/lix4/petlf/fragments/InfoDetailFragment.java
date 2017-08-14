@@ -4,16 +4,12 @@ package edu.rosehulman.lix4.petlf.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import edu.rosehulman.lix4.petlf.R;
-import edu.rosehulman.lix4.petlf.models.Post;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +23,7 @@ public class InfoDetailFragment extends Fragment {
     private static final String DESCRIPTION = "description";
     private static final String SIZE = "size";
     private static final String BREED = "breed";
+
 
     // TODO: Rename and change types of parameters
     private String mTitle;
