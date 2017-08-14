@@ -27,7 +27,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
                     ConstantUser.setCurrentUser(user);
                 } else {
                     ConstantUser.removeCurrentUser();
@@ -237,8 +235,6 @@ public class MainActivity extends AppCompatActivity implements
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String email = mEmailEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
                 if (switsh) {
                     //sign in
 //                    mAuth.signInWithEmailAndPassword(email, password)
@@ -246,25 +242,52 @@ public class MainActivity extends AppCompatActivity implements
                     signin();
                 } else {
                     //sign up and login user in automatically
+                    String email = mEmailEditText.getText().toString();
+                    String password = mPasswordEditText.getText().toString();
+                    String confirmedPassword = mConfirmationPasswordEditText.getText().toString();
+                    boolean cancelLogin = false;
+                    if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+                        showError(getString(R.string.invalid_password));
+                        cancelLogin = true;
+                    }
+
+                    if (TextUtils.isEmpty(email)) {
+                        showError(getString(R.string.email_required));
+                        cancelLogin = true;
+                    } else if (!isEmailValid(email)) {
+                        showError(getString(R.string.invalid_email));
+                        cancelLogin = true;
+                    }
+
+                    if (!password.equals(confirmedPassword)) {
+                        showError(getString(R.string.invalid_confirmation_password));
+                        cancelLogin = true;
+                    }
+
+                    if (!cancelLogin) {
+                        mAuth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(mOnCompleteListener);
+                        hideKeyboard();
+                    }
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
                     //update user imageUrl and alias
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+//                    FirebaseUser user = mAuth.getCurrentUser();
+//                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
 //                            .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
-                            .build();
+//                            .build();
 
-                    user.updateProfile(profileUpdates)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-
-                                    }
-                                }
-                            });
+//                    user.updateProfile(profileUpdates)
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if (task.isSuccessful()) {
+//
+//                                    }
+//                                }
+//                            });
                 }
                 mWelcomeFragment.controlButtons(true);
             }

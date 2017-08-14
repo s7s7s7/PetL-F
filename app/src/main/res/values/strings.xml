@@ -29,4 +29,5 @@
     <string name="invalid_password">Password is too short!</string>
     <string name="email_required">Email is required!</string>
     <string name="invalid_email">The email address is invalid!</string>
+    <string name="invalid_confirmation_password">Two passwords are different!</string>
 </resources>

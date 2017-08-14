@@ -5,7 +5,7 @@
     tools:context="edu.rosehulman.lix4.petlf.fragments.WelcomeFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcome_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -16,42 +16,40 @@
         android:textAlignment="center"
         android:textSize="@dimen/welcome_text_font" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:text="@string/most_recent_lost_title" />
+    <!--<TextView-->
+    <!--android:id="@+id/textView2"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:text="@string/most_recent_lost_title" />-->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView"
-        android:layout_marginTop="17dp"
-        android:text="@string/most_recent_found_title" />
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_below="@+id/textView"-->
+    <!--android:layout_marginTop="17dp"-->
+    <!--android:text="@string/most_recent_found_title" />-->
 
     <Button
         android:id="@+id/signin_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/Signin_button_text"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/signup_button"
-        android:layout_marginTop="41dp"
-        android:text="@string/Signin_button_text" />
+        android:layout_marginBottom="137dp" />
 
     <Button
         android:id="@+id/signup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="65dp"
-        android:text="@string/Signup_button_text" />
+        android:text="@string/Signup_button_text"
+        android:layout_above="@+id/signin_button"
+        android:layout_marginBottom="68dp" />
 
 </RelativeLayout>

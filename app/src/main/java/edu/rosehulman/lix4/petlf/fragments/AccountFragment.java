@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.rosehulman.lix4.petlf.ConstantUser;
@@ -51,6 +52,7 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         TextView emailTextView = (TextView) view.findViewById(R.id.email_display_text_view);
+        ImageView profile_pic_image_view = (ImageView) view.findViewById(R.id.profile_pic_image_view);
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
         mLogoutButton = (Button) view.findViewById(R.id.button_logout);
         if (ConstantUser.hasUser()) {
@@ -78,6 +80,7 @@ public class AccountFragment extends Fragment {
             emailTextView.setText(R.string.email_not_log_in);
             myPostsButton.setVisibility(View.INVISIBLE);
             mLogoutButton.setVisibility(View.INVISIBLE);
+            profile_pic_image_view.setImageResource(R.drawable.ic_account_circle_black_24dp);
         }
 
         Button contactUsButton = (Button) view.findViewById(R.id.button_contact_us);
