@@ -4,6 +4,7 @@ package edu.rosehulman.lix4.petlf.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +24,6 @@ public class WelcomeFragment extends Fragment {
     public WelcomeFragment() {
         // Required empty public constructor
     }
-
-//    public static WelcomeFragment newInstance(String param1, String param2) {
-//        WelcomeFragment fragment = new WelcomeFragment();
-//        Bundle args = new Bundle();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +51,7 @@ public class WelcomeFragment extends Fragment {
             }
         });
 
+        Log.d("WFCreateView: ", ConstantUser.hasUser() + "");
         if (!ConstantUser.hasUser()) {
             controlButtons(false);
         } else {

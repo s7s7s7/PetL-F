@@ -57,4 +57,13 @@
         android:layout_marginRight="16dp"
         android:text="@string/button_contact_us_text" />
 
+    <Button
+        android:id="@+id/button_reset_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/button_reset_password_text"
+        android:layout_below="@+id/button_logout"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

@@ -1,16 +1,12 @@
 package edu.rosehulman.lix4.petlf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by phillee on 7/21/2017.
  */
 
 public class Util {
 
-    public static List<String> getBreeds() {
-        List<String> breedList = new ArrayList<>();
+    public static String[] getCatBreeds() {
         String[] breeds = new String[]{
                 "Abyssinian",
                 "American Bobtail",
@@ -18,6 +14,7 @@ public class Util {
                 "American Shorthair",
                 "American Wirehair",
                 "Balinese",
+                "Calico",
                 "Bengal",
                 "Birman",
                 "Bombay",
@@ -70,8 +67,22 @@ public class Util {
                 "Turkish Angora",
                 "Turkish Van"
         };
-        breedList.addAll(breedList);
-        return breedList;
+        return breeds;
     }
 
+    public static String[] getSize() {
+        return new String[]{"Big", "Medium", "Small"};
+    }
+
+    public static String[] getDogBreeds() {
+
+        return new String[]{
+                "Affenpinscher",
+                "Afghan Hound",
+                "Airedale Terrier",
+                "Akita",
+                "Alaskan Malamute",
+                "Standard American Eskimo Dog"
+        };
+    }
 }
