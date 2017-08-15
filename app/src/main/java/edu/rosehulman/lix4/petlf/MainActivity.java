@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements
                     ConstantUser.removeCurrentUser();
                 }
 
-
                 //Refresh the fragment after login state changed.
                 Fragment frg = getSupportFragmentManager().findFragmentByTag(mTag);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

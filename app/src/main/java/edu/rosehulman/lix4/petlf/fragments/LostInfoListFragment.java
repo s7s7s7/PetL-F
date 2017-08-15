@@ -3,26 +3,27 @@ package edu.rosehulman.lix4.petlf.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import edu.rosehulman.lix4.petlf.InfoListAdapter;
 import edu.rosehulman.lix4.petlf.R;
+import edu.rosehulman.lix4.petlf.Util;
 import edu.rosehulman.lix4.petlf.models.Post;
 
-public class LostInfoListFragment extends Fragment{
+public class LostInfoListFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String UID = "uid";
 
@@ -121,6 +122,83 @@ public class LostInfoListFragment extends Fragment{
         builder.setTitle("Add new Pic here.");
         builder.setView(view);
 
+        breedEditView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_double_picker, null);
+                NumberPicker animalPicker = (NumberPicker) view.findViewById(R.id.number_picker_animal);
+                final NumberPicker breadPicker = (NumberPicker) view.findViewById(R.id.number_picker_breed);
+                breadPicker.setMinValue(0);
+                breadPicker.setMaxValue(Util.getCatBreeds().length - 1);
+                breadPicker.setDisplayedValues(Util.getCatBreeds());
+                breadPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        breedEditView.setText(Util.getCatBreeds()[newVal]);
+                    }
+                });
+                animalPicker.setMinValue(0);
+                animalPicker.setMaxValue(1);
+                animalPicker.setWrapSelectorWheel(true);
+                animalPicker.setDisplayedValues(new String[]{"Cats", "Dogs"});
+                animalPicker.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                animalPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        breadPicker.setDisplayedValues(null);
+                        if (newVal == 0) {
+                            breadPicker.setMinValue(0);
+                            breadPicker.setMaxValue(Util.getCatBreeds().length - 1);
+                            breadPicker.setDisplayedValues(Util.getCatBreeds());
+                            breadPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                                @Override
+                                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                                    breedEditView.setText(Util.getCatBreeds()[newVal]);
+                                }
+                            });
+                        } else if (newVal == 1) {
+                            breadPicker.setMinValue(0);
+                            breadPicker.setMaxValue(Util.getDogBreeds().length - 1);
+                            breadPicker.setDisplayedValues(Util.getDogBreeds());
+                            breadPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                                @Override
+                                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                                    breedEditView.setText(Util.getDogBreeds()[newVal]);
+                                }
+                            });
+                        }
+
+                        breadPicker.setWrapSelectorWheel(true);
+
+                        breadPicker.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                    }
+                });
+                builder.setView(view);
+                builder.show();
+            }
+        });
+
+        sizeEditView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                NumberPicker picker = new NumberPicker(getContext());
+                picker.setMinValue(0);
+                picker.setMaxValue(2);
+                picker.setDisplayedValues(Util.getSize());
+                picker.setWrapSelectorWheel(true);
+                picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        sizeEditView.setText(Util.getSize()[newVal]);
+                    }
+                });
+                picker.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                builder.setView(picker);
+                builder.show();
+            }
+        });
 
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
