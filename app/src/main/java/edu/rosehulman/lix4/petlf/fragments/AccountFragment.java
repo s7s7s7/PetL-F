@@ -1,10 +1,13 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import edu.rosehulman.lix4.petlf.ConstantUser;
 import edu.rosehulman.lix4.petlf.MyPostActivity;
@@ -22,7 +29,6 @@ public class AccountFragment extends Fragment {
 
     private static final String ARG_USER = "currentUser";
     private AFCallBack mAFCallBack;
-    private Button mLogoutButton;
 
     private User mUser;
 
@@ -30,20 +36,10 @@ public class AccountFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AccountFragment newInstance(User currentUser) {
-        AccountFragment fragment = new AccountFragment();
-        Bundle args = new Bundle();
-//        args.putParcelable(ARG_USER, currentUser);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mUser = getArguments().getParcelable(ARG_USER);
-        }
     }
 
     @Override
@@ -54,32 +50,65 @@ public class AccountFragment extends Fragment {
         TextView emailTextView = (TextView) view.findViewById(R.id.email_display_text_view);
         ImageView profile_pic_image_view = (ImageView) view.findViewById(R.id.profile_pic_image_view);
         Button myPostsButton = (Button) view.findViewById(R.id.button_myposts);
-        mLogoutButton = (Button) view.findViewById(R.id.button_logout);
+        Button logoutButton = (Button) view.findViewById(R.id.button_logout);
+        Button resetPasswordButton = (Button) view.findViewById(R.id.button_reset_password);
         if (ConstantUser.hasUser()) {
             emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), ConstantUser.currentUser.getEmail()));
             myPostsButton.setVisibility(View.VISIBLE);
-            mLogoutButton.setVisibility(View.VISIBLE);
+            resetPasswordButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.VISIBLE);
+            resetPasswordButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Send reset password email to your email?");
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseAuth auth = FirebaseAuth.getInstance();
+                            String emailAddress = auth.getCurrentUser().getEmail();
+                            auth.sendPasswordResetEmail(emailAddress)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                                builder.setTitle("Successfully Reset Your password!");
+                                                builder.setMessage("System will sign you out. Please sign in using your new password.");
+                                                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        mAFCallBack.setNavigationId(R.id.navigation_home);
+                                                        mAFCallBack.signOut();
+                                                    }
+                                                });
+                                                builder.create().show();
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+                    builder.create().show();
+                }
+            });
             myPostsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    startMyPostActivity();
                     mAFCallBack.switchToMyPosts();
                 }
             });
-            mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mAFCallBack.setNavigationId(R.id.navigation_home);
                     mAFCallBack.signOut();
-//                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//                ft.replace(R.id.content, new WelcomeFragment());
-//                ft.commit();
                 }
             });
         } else {
             emailTextView.setText(R.string.email_not_log_in);
             myPostsButton.setVisibility(View.INVISIBLE);
-            mLogoutButton.setVisibility(View.INVISIBLE);
+            logoutButton.setVisibility(View.INVISIBLE);
+            resetPasswordButton.setVisibility(View.INVISIBLE);
             profile_pic_image_view.setImageResource(R.drawable.ic_account_circle_black_24dp);
         }
 

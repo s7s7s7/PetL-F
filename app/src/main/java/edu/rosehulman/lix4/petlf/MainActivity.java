@@ -235,9 +235,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (switsh) {
-                    //sign in
-//                    mAuth.signInWithEmailAndPassword(email, password)
-//                            .addOnCompleteListener(mOnCompleteListener);
                     signin();
                 } else {
                     //sign up and login user in automatically
@@ -315,8 +312,9 @@ public class MainActivity extends AppCompatActivity implements
             showError(getString(R.string.invalid_email));
             cancelLogin = true;
         }
-
+        Log.d("signin: ", email + password + cancelLogin + "");
         if (!cancelLogin) {
+            Log.d("here", "inside");
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(mOnCompleteListener);
             hideKeyboard();
