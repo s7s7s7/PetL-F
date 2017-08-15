@@ -36,6 +36,7 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
     private DatabaseReference mInfoRef;
     private ArrayList<Post> mPosts;
     private LostInfoListFragment.LILCallback mLILCallback;
+    private Uri toUpload;
 
     public InfoListAdapter(String type, LostInfoListFragment.LILCallback callback) {
         mPosts = new ArrayList<>();
@@ -85,23 +86,29 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
         return mPosts.size();
     }
 
-    public void addPost(Post post) {
+    public void addPost(Post post, Uri toUpload) {
         mInfoRef.push().setValue(post);
+        this.toUpload = toUpload;
     }
 
-    public void uploadImage(Uri file) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference reference = storage.getReference().child(ConstantUser.currentUser.getUid());
-        StorageReference imgRef = reference.child("PetImg");
+    public void uploadImage(String key) {
 
-        UploadTask uploadTask = imgRef.putFile(file);
+        if (this.toUpload != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference reference = storage.getReference().child(key);
+            StorageReference imgRef = reference.child("PetImg");
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("===================>>>","uploadImg failed");
-            }
-        });
+            UploadTask uploadTask = imgRef.putFile(this.toUpload);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("===================>>>", "uploadImg failed");
+                }
+            });
+        }
+
+        this.toUpload = null;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -119,6 +126,7 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             Post post = dataSnapshot.getValue(Post.class);
             post.setKey(dataSnapshot.getKey());
+            uploadImage(dataSnapshot.getKey());
             mPosts.add(0, post);
             Log.d("------------->>>", "Post's title is: " + mPosts.get(0).getTitle());
             notifyDataSetChanged();

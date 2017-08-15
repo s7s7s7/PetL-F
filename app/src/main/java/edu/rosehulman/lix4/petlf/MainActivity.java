@@ -21,12 +21,17 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
@@ -39,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements
         AccountFragment.AFCallBack,
         WelcomeFragment.WFCallBack,
         LostInfoListFragment.LILCallback,
-        MyPostFragment.MPFCallback {
+        MyPostFragment.MPFCallback,
+        InfoDetailFragment.IDFCallback{
 
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
@@ -337,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onPostSelected(Post post, int position) {
-        InfoDetailFragment mInfoDetailFragment = InfoDetailFragment.newInstance(post.getTitle(), post.getDescription(), post.getSize().toString(), post.getBreed());
+        InfoDetailFragment mInfoDetailFragment = InfoDetailFragment.newInstance(post.getTitle(), post.getDescription(), post.getSize().toString(), post.getBreed(), post.getKey());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content, mInfoDetailFragment);
         ft.addToBackStack("detail");
@@ -427,5 +433,25 @@ public class MainActivity extends AppCompatActivity implements
         ft.replace(R.id.content, myPostFragment);
         ft.addToBackStack("myPosts");
         ft.commit();
+    }
+
+    @Override
+    public void showImage(String key) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("This is the picture for the pet");
+        View view = getLayoutInflater().inflate(R.layout.imagedetaildialog, null);
+        builder.setView(view);
+
+        ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(key).child("PetImg");
+
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .into(imageView);
+
+        builder.setPositiveButton(android.R.string.ok,null);
+
+        builder.create().show();
     }
 }

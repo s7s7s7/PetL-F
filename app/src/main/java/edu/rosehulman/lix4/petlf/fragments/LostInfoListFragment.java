@@ -35,6 +35,8 @@ public class LostInfoListFragment extends Fragment {
     private LILCallback mLILCallback;
     private boolean mLoggedIn;
 
+    private Uri toUpload;
+
     public LostInfoListFragment() {
         // Required empty public constructor
     }
@@ -110,6 +112,7 @@ public class LostInfoListFragment extends Fragment {
         final EditText sizeEditView = (EditText) view.findViewById(R.id.size_edittext_view);
         final TextView uploadText = (TextView) view.findViewById(R.id.uploadimage_text_view);
         final Button uploadButton = (Button) view.findViewById(R.id.uploadimage_button);
+
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,7 +231,7 @@ public class LostInfoListFragment extends Fragment {
     }
 
     private void addPost(Post post) {
-        mAdapter.addPost(post);
+        mAdapter.addPost(post,this.toUpload);
     }
 
 //    private Post.Size turnToSIZE(String s) {
@@ -263,7 +266,7 @@ public class LostInfoListFragment extends Fragment {
     }
 
     public void uploadImage(Uri file) {
-        mAdapter.uploadImage(file);
+        this.toUpload = file;
     }
 
 

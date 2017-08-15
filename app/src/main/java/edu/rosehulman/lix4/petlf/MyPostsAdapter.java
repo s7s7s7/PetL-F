@@ -99,7 +99,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTextView;
-        private Button deleteButton;
+//        private Button deleteButton;
 
         public ViewHolder(View postView) {
             super(postView);
