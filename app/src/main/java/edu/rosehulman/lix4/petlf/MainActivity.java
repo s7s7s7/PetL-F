@@ -107,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    Log.d("======>>>>>>>>>>>>","Change current user!!!\n");
                     ConstantUser.setCurrentUser(user);
+                    if (mPotrait != null){
+                        uploadPotraitPic();
+                    }
                 } else {
                     ConstantUser.removeCurrentUser();
                 }
@@ -302,11 +306,11 @@ public class MainActivity extends AppCompatActivity implements
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
 
-                    try {
-                        uploadPotraitPic();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        uploadPotraitPic();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     //update user imageUrl and alias
 //                    FirebaseUser user = mAuth.getCurrentUser();
 //                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -326,23 +330,28 @@ public class MainActivity extends AppCompatActivity implements
                 mWelcomeFragment.controlButtons(true);
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPotrait = null;
+            }
+        });
         builder.show();
     }
 
-    private void uploadPotraitPic() throws InterruptedException {
+    private void uploadPotraitPic() {
 
-        int i = 0;
-        while(ConstantUser.currentUser==null){
-            TimeUnit.SECONDS.sleep(1);
-            i++;
+//        int i = 0;
+//        while(ConstantUser.currentUser==null){
+//            i++;
 
-            if(i>=30){
-                throw new InterruptedException();
+//            if(i>=30){
+//                Log.d("=======>>>>>>>","upload failed\n");
+//                throw new InterruptedException();
 //                return;
-            }
-        }
-
+//            }
+//        }
+//        Log.d("======>>>>>>", "start upload\n");
         if (this.mPotrait != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference reference = storage.getReference().child(ConstantUser.currentUser.getUid());
