@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
     private Uri newImageUri;
     private Button mUploadButton;
     private Uri mPotrait;
+    private TextView mUploadText;
 
 
     @Override
@@ -230,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements
         mPasswordEditText = (EditText) view.findViewById(R.id.edit_password_text_signup);
         mConfirmationPasswordEditText = (EditText) view.findViewById(R.id.edit_password_confirm_text_signup);
         mUploadButton = (Button) view.findViewById(R.id.upload_image_button);
+        mUploadText = (TextView) view.findViewById(R.id.upload_image_text_view);
 
         mUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,6 +265,8 @@ public class MainActivity extends AppCompatActivity implements
             builder.setTitle(R.string.signin_dialog_title);
             mConfirmationPasswordEditText.setVisibility(View.INVISIBLE);
             confirmationPasswordTitle.setVisibility(View.INVISIBLE);
+            mUploadButton.setVisibility(View.INVISIBLE);
+            mUploadText.setVisibility(View.INVISIBLE);
         } else {
             builder.setTitle(R.string.signup_dialog_title);
         }

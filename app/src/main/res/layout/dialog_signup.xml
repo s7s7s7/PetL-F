@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_green_light"
-    android:orientation="vertical">
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/dialog_email_title_signup"
@@ -13,7 +14,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="@string/dialog_email_text"
-        android:textSize="30dp" />
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="30dp"
+        android:textStyle="italic" />
 
 
     <TextView
@@ -25,7 +28,9 @@
         android:layout_below="@+id/edit_username_text_signup"
         android:layout_marginTop="36dp"
         android:text="@string/dialog_password_text"
-        android:textSize="30dp" />
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="30dp"
+        android:textStyle="italic" />
 
     <EditText
         android:id="@+id/edit_username_text_signup"
@@ -42,7 +47,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/dialog_password_title_signup"
-        android:layout_marginTop="37dp"
         android:ems="10"
         android:inputType="numberPassword" />
 
@@ -55,7 +59,9 @@
         android:layout_below="@+id/edit_password_text_signup"
         android:layout_marginTop="30dp"
         android:text="@string/dialog_confirm_email_text"
-        android:textSize="30dp" />
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="30dp"
+        android:textStyle="italic" />
 
     <EditText
         android:id="@+id/edit_password_confirm_text_signup"
@@ -64,27 +70,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/dialog_confirm_email_title_signup"
-        android:layout_marginTop="26dp"
         android:ems="10"
         android:inputType="numberPassword" />
 
     <TextView
+        android:id="@+id/upload_image_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below = "@+id/edit_password_confirm_text_signup"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edit_password_confirm_text_signup"
         android:layout_marginTop="10dp"
-        android:text="@string/upload_image"
-        android:id="@+id/upload_image_text_view"/>
+        android:text="@string/upload_image" />
 
     <Button
+        android:id="@+id/upload_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload"
-        android:layout_toRightOf="@+id/upload_image_text_view"
-        android:layout_below="@+id/edit_password_confirm_text_signup"
         android:layout_alignParentRight="true"
-        android:id="@+id/upload_image_button"/>
+        android:layout_below="@+id/edit_password_confirm_text_signup"
+        android:layout_toRightOf="@+id/upload_image_text_view"
+        android:text="Upload" />
 
 
 </RelativeLayout>

@@ -13,7 +13,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="@string/dialog_email_text"
-        android:textSize="30dp" />
+        android:textSize="30sp"
+        android:textColor="@android:color/holo_blue_light"/>
 
 
     <TextView
@@ -25,7 +26,8 @@
         android:layout_below="@+id/edit_username_text_signin"
         android:layout_marginTop="36dp"
         android:text="@string/dialog_password_text"
-        android:textSize="30dp" />
+        android:textSize="30sp"
+        android:textColor="@android:color/holo_blue_light"/>
 
     <EditText
         android:id="@+id/edit_username_text_signin"
@@ -42,7 +44,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/dialog_password_title_signin"
-        android:layout_marginTop="46dp"
         android:ems="10"
         android:inputType="numberPassword" />
 
