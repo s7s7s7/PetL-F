@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
 
         initilizeListener();
+
+        MyFirebaseMessagingService mService = new MyFirebaseMessagingService(this);
+        mService.onCreate();
     }
 
     private void initilizeListener() {
@@ -186,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+
 
     @Override
     protected void onStop() {
