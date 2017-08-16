@@ -14,7 +14,7 @@
         card_view:cardCornerRadius="10dp"
         app:cardUseCompatPadding="true"
         android:padding="2dp"
-        card_view:cardBackgroundColor="@android:color/background_light"
+        card_view:cardBackgroundColor="@android:color/holo_blue_bright"
         >
 
         <RelativeLayout
@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:id="@+id/info_cardview_title"
-                android:textSize="36sp"
+                android:textSize="24sp"
+                android:textStyle="italic"
                 />
 
         </RelativeLayout>

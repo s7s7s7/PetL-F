@@ -14,7 +14,7 @@
         card_view:cardCornerRadius="10dp"
         app:cardUseCompatPadding="true"
         android:padding="2dp"
-        card_view:cardBackgroundColor="@android:color/background_light"
+        card_view:cardBackgroundColor="@android:color/holo_orange_light"
         >
 
         <RelativeLayout

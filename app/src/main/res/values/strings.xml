@@ -31,4 +31,6 @@
     <string name="invalid_email">The email address is invalid!</string>
     <string name="invalid_confirmation_password">Two passwords are different!</string>
     <string name="button_reset_password_text">Reset Password</string>
+    <string name="re_upload_the_images">Re-Upload the images</string>
+    <string name="upload_image"><![CDATA[Upload image--->>]]></string>
 </resources>

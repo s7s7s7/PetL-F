@@ -1,6 +1,8 @@
 package edu.rosehulman.lix4.petlf.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import edu.rosehulman.lix4.petlf.MainActivity;
 import edu.rosehulman.lix4.petlf.R;
 
 /**
@@ -23,6 +26,7 @@ public class InfoDetailFragment extends Fragment {
     private static final String DESCRIPTION = "description";
     private static final String SIZE = "size";
     private static final String BREED = "breed";
+    private static final String KEY = "ley";
 
 
     // TODO: Rename and change types of parameters
@@ -31,19 +35,23 @@ public class InfoDetailFragment extends Fragment {
     private String mSize;
     private String mBreed;
     private Uri mImage;
+    private String mKey;
+
+    private IDFCallback mIDFCallback;
 
 
     public InfoDetailFragment() {
         // Required empty public constructor
     }
 
-    public static InfoDetailFragment newInstance(String title, String description, String size, String breed) {
+    public static InfoDetailFragment newInstance(String title, String description, String size, String breed, String key) {
         InfoDetailFragment fragment = new InfoDetailFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, title);
         args.putString(DESCRIPTION, description);
         args.putString(SIZE, size);
         args.putString(BREED, breed);
+        args.putString(KEY,key);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +64,10 @@ public class InfoDetailFragment extends Fragment {
             mBreed = getArguments().getString(BREED);
             mDescription = getArguments().getString(DESCRIPTION);
             mSize = getArguments().getString(SIZE);
+            mKey = getArguments().getString(KEY);
         }
+
+
     }
 
 //    private Post.Size turnToSIZE(String s) {
@@ -86,7 +97,7 @@ public class InfoDetailFragment extends Fragment {
         imageText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mIDFCallback.showImage(mKey);
             }
         });
 
@@ -97,6 +108,7 @@ public class InfoDetailFragment extends Fragment {
         return view;
     }
 
+
 //    private String turnToSTRING(Post.Size mSize) {
 //        if (mSize.equals(Post.Size.Big)) {
 //            return "Big";
@@ -106,5 +118,26 @@ public class InfoDetailFragment extends Fragment {
 //            return "Small";
 //        }
 //    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof InfoDetailFragment.IDFCallback) {
+            mIDFCallback = (InfoDetailFragment.IDFCallback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement MPFCallback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mIDFCallback = null;
+    }
+
+    public interface IDFCallback{
+        void showImage(String key);
+    }
 
 }

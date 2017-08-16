@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light"
     tools:context="edu.rosehulman.lix4.petlf.fragments.LostInfoListFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -16,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="5dp"
-        app:srcCompat="@drawable/ic_send_white_36dp" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 
 </FrameLayout>

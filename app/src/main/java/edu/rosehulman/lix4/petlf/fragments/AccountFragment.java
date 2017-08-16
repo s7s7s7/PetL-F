@@ -16,9 +16,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import edu.rosehulman.lix4.petlf.ConstantUser;
 import edu.rosehulman.lix4.petlf.MyPostActivity;
@@ -54,6 +58,14 @@ public class AccountFragment extends Fragment {
         Button resetPasswordButton = (Button) view.findViewById(R.id.button_reset_password);
         if (ConstantUser.hasUser()) {
             emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), ConstantUser.currentUser.getEmail()));
+
+            //load pic of user
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(ConstantUser.currentUser.getUid()).child("Potrait");
+            Glide.with(getActivity())
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference)
+                    .into(profile_pic_image_view);
+
             myPostsButton.setVisibility(View.VISIBLE);
             resetPasswordButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.VISIBLE);

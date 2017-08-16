@@ -68,5 +68,23 @@
         android:ems="10"
         android:inputType="numberPassword" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below = "@+id/edit_password_confirm_text_signup"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/upload_image"
+        android:id="@+id/upload_image_text_view"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload"
+        android:layout_toRightOf="@+id/upload_image_text_view"
+        android:layout_below="@+id/edit_password_confirm_text_signup"
+        android:layout_alignParentRight="true"
+        android:id="@+id/upload_image_button"/>
+
 
 </RelativeLayout>
