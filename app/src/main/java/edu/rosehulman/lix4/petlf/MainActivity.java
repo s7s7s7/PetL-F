@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -517,6 +518,8 @@ public class MainActivity extends AppCompatActivity implements
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(post.getKey()).child("PetImg");
 
                     UploadTask uploadTask = storageReference.putFile(newImageUri);
+
+                    mInfoFragment.newImgUploaded();
                 }
 
                 newImageUri = null;
@@ -554,9 +557,13 @@ public class MainActivity extends AppCompatActivity implements
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(key).child("PetImg");
 
+
+
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(storageReference)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(imageView);
 
         builder.setPositiveButton(android.R.string.ok, null);

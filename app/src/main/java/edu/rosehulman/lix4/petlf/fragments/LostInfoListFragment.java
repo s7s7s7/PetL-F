@@ -269,6 +269,10 @@ public class LostInfoListFragment extends Fragment {
         this.toUpload = file;
     }
 
+    public void newImgUploaded() {
+        mAdapter.notifyDataSetChanged();
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
