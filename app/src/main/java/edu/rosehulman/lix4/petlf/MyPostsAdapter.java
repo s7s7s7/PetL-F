@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +140,9 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
             for (Post post : mPosts) {
                 if (post.getKey().equals(key)) {
                     mPosts.remove(post);
+                    StorageReference todelete = FirebaseStorage.getInstance().getReference().child(post.getKey());
+                    todelete.delete();
+
                     notifyDataSetChanged();
                     return;
                 }

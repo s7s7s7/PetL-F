@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,11 +28,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
 
 import edu.rosehulman.lix4.petlf.fragments.AccountFragment;
 import edu.rosehulman.lix4.petlf.fragments.InfoDetailFragment;
@@ -45,8 +51,10 @@ public class MainActivity extends AppCompatActivity implements
         WelcomeFragment.WFCallBack,
         LostInfoListFragment.LILCallback,
         MyPostFragment.MPFCallback,
-        InfoDetailFragment.IDFCallback{
+        InfoDetailFragment.IDFCallback {
 
+    private static final int RECHOOSE_IMAGE_REQUEST = 2;
+    private static final int CHOOSE_POTRAIT_PICTURE = 3;
     //Making this two fields is to control UI according to Login state.
     private WelcomeFragment mWelcomeFragment = new WelcomeFragment();
     private String mTag = null;
@@ -65,12 +73,17 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private FirebaseAuth mAuth;
+    private Uri newImageUri;
+    private Button mUploadButton;
+    private Uri mPotrait;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.newImageUri = null;
+        this.mPotrait = null;
 
         mNavigation = (BottomNavigationView) findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -208,6 +221,15 @@ public class MainActivity extends AppCompatActivity implements
         mEmailEditText = (EditText) view.findViewById(R.id.edit_username_text_signup);
         mPasswordEditText = (EditText) view.findViewById(R.id.edit_password_text_signup);
         mConfirmationPasswordEditText = (EditText) view.findViewById(R.id.edit_password_confirm_text_signup);
+        mUploadButton = (Button) view.findViewById(R.id.upload_image_button);
+
+        mUploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosePotrait();
+            }
+        });
+
         mEmailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -275,6 +297,12 @@ public class MainActivity extends AppCompatActivity implements
                             .addOnCompleteListener(mOnCompleteListener);
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(mOnCompleteListener);
+
+                    try {
+                        uploadPotraitPic();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     //update user imageUrl and alias
 //                    FirebaseUser user = mAuth.getCurrentUser();
 //                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -296,6 +324,36 @@ public class MainActivity extends AppCompatActivity implements
         });
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
+    }
+
+    private void uploadPotraitPic() throws InterruptedException {
+
+        int i = 0;
+        while(ConstantUser.currentUser==null){
+            TimeUnit.SECONDS.sleep(1);
+            i++;
+
+            if(i>=30){
+                throw new InterruptedException();
+//                return;
+            }
+        }
+
+        if (this.mPotrait != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference reference = storage.getReference().child(ConstantUser.currentUser.getUid());
+            StorageReference imgRef = reference.child("Potrait");
+
+            UploadTask uploadTask = imgRef.putFile(this.mPotrait);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("===================>>>", "uploadImg failed");
+                }
+            });
+            this.mPotrait = null;
+        }
     }
 
     public void signin() {
@@ -359,6 +417,20 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    public void reChooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "ReChoose Picture"), RECHOOSE_IMAGE_REQUEST);
+    }
+
+    public void choosePotrait(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Choose Potrait"), CHOOSE_POTRAIT_PICTURE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -367,6 +439,11 @@ public class MainActivity extends AppCompatActivity implements
             Uri file = data.getData();
 
             mInfoFragment.uploadImage(file);
+        } else if (requestCode == RECHOOSE_IMAGE_REQUEST && resultCode == RESULT_OK && data != null
+                && data.getData() != null) {
+            this.newImageUri = data.getData();
+        } else if (requestCode == CHOOSE_POTRAIT_PICTURE && resultCode == RESULT_OK && data != null && data.getData() != null){
+            this.mPotrait = data.getData();
         }
     }
 
@@ -382,6 +459,15 @@ public class MainActivity extends AppCompatActivity implements
         final EditText breedEditView = (EditText) view.findViewById(R.id.post_change_breed_edit);
         final EditText sizeEditView = (EditText) view.findViewById(R.id.post_change_description_edit);
         final EditText descriptionEditView = (EditText) view.findViewById(R.id.post_change_size_edit);
+        final Button reupload = (Button) view.findViewById(R.id.reUpload_image_button);
+
+        Uri temp;
+        reupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reChooseImage();
+            }
+        });
 
 
         titleEditView.setHint(post.getTitle());
@@ -410,7 +496,13 @@ public class MainActivity extends AppCompatActivity implements
                 if (!descriptionEditView.getText().toString().equals("")) {
                     description = descriptionEditView.getText().toString();
                 }
+                if (newImageUri != null) {
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(post.getKey()).child("PetImg");
 
+                    UploadTask uploadTask = storageReference.putFile(newImageUri);
+                }
+
+                newImageUri = null;
                 myPostFragment.update(post, title, breed, size, description);
             }
         });
@@ -450,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements
                 .load(storageReference)
                 .into(imageView);
 
-        builder.setPositiveButton(android.R.string.ok,null);
+        builder.setPositiveButton(android.R.string.ok, null);
 
         builder.create().show();
     }

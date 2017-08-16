@@ -60,7 +60,7 @@ public class AccountFragment extends Fragment {
             emailTextView.setText(String.format(getResources().getString(R.string.email_diaplay_text), ConstantUser.currentUser.getEmail()));
 
             //load pic of user
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(ConstantUser.currentUser.getUid());
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(ConstantUser.currentUser.getUid()).child("Potrait");
             Glide.with(getActivity())
                     .using(new FirebaseImageLoader())
                     .load(storageReference)
