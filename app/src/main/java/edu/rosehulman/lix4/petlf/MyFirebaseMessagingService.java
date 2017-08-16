@@ -26,6 +26,10 @@ public class MyFirebaseMessagingService extends Service {
     public FirebaseDatabase mDatabase;
     private Context mContext;
 
+    public MyFirebaseMessagingService() {
+        super();
+    }
+
     public MyFirebaseMessagingService(Context context) {
         super();
         mContext = context;
@@ -97,8 +101,6 @@ public class MyFirebaseMessagingService extends Service {
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
 
-        /* Update firebase set notifcation with this key to 1 so it doesnt get pulled by our notification listener*/
-//        flagNotificationAsSent(notification_key);
     }
 
     @Override
