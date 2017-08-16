@@ -24,6 +24,16 @@ import edu.rosehulman.lix4.petlf.models.Post;
 
 public class MyFirebaseMessagingService extends Service {
     public FirebaseDatabase mDatabase;
+    private Context mContext;
+
+    public MyFirebaseMessagingService() {
+        super();
+    }
+
+    public MyFirebaseMessagingService(Context context) {
+        super();
+        mContext = context;
+    }
 
     @Override
     public void onCreate() {
@@ -69,18 +79,18 @@ public class MyFirebaseMessagingService extends Service {
     }
 
     private void showNotification(Post post) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.mipmap.ic_pets_black_48dp)
                 .setContentTitle("Someone made a new post!")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentText(post.getTitle())
                 .setAutoCancel(true);
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        Intent resultIntent = new Intent(mContext, MainActivity.class);
 
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(
-                        this,
+                        mContext,
                         0,
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
@@ -88,11 +98,9 @@ public class MyFirebaseMessagingService extends Service {
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
 
-        /* Update firebase set notifcation with this key to 1 so it doesnt get pulled by our notification listener*/
-//        flagNotificationAsSent(notification_key);
     }
 
     @Override
@@ -112,15 +120,3 @@ public class MyFirebaseMessagingService extends Service {
     }
 }
 
-//public class MyFirebaseMessagingService extends FirebaseMessagingService {
-//
-//    @Override
-//    public void onMessageReceived(RemoteMessage remoteMessage) {
-////        super.onMessageReceived(remoteMessage);
-//        Log.d("onMessageReceived: ", remoteMessage.getNotification().getBody());
-//    }
-//
-//    private void sendNotification() {
-//
-//    }
-//}
